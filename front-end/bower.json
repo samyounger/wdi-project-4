@@ -1,0 +1,20 @@
+{
+  "name": "bodhinomad",
+  "homepage": "https://github.com/samyounger/wdi-project-4",
+  "authors": [
+    "samyounger <sam_younger@hotmail.com>"
+  ],
+  "description": "An investment management website",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8"
+  }
+}
