@@ -21,6 +21,8 @@ function homeCtrl($http, $resource, IndexEpic) {
   // Google Finance input/output
   vm.detailsReturned = [];
 
+  // Filter company name
+  vm.companyName = "";
 
   vm.getData = function(){
     event.preventDefault();
@@ -35,6 +37,8 @@ function homeCtrl($http, $resource, IndexEpic) {
       url: "https://www.quandl.com/api/v3/datasets/WIKI/" + vm.companyEpic + ".json?api_key=s5sWLyV147fDnD7YssxU"
     }).then(function successCallback(response) {
       vm.companyData.push(response.data.dataset);
+      console.log(vm.companyData)
+      companyNameFilter();
       sortChartData();
       prepareChart();
       companyDetails();
@@ -43,10 +47,14 @@ function homeCtrl($http, $resource, IndexEpic) {
   };
 
   function sortChartData() {
-    for (var i = 0; i < vm.companyData[0].data.length; i++) {
+    for (var i = vm.companyData[0].data.length-1; i >= 0; i--) {
       vm.companyDateData.push(vm.companyData[0].data[i][0]);
-      vm.companyPriceData.push(vm.companyData[0].data[i][4]);
+      vm.companyPriceData.push(vm.companyData[0].data[i][11]);
     }
+  }
+
+  function companyNameFilter() {
+    vm.companyName = vm.companyData[0].name.slice(0, vm.companyData[0].name.indexOf(")")+1);
   }
 
   function prepareChart() {
@@ -56,7 +64,7 @@ function homeCtrl($http, $resource, IndexEpic) {
         type: 'line',
       },
       title: {
-        text: vm.companyData[0].name,
+        text: vm.companyName,
       },
       xAxis: {
         title: {
@@ -69,6 +77,7 @@ function homeCtrl($http, $resource, IndexEpic) {
         }
       },
       series: [{
+        name: vm.companyName,
         showInLegend: false,
         data: vm.companyPriceData
       }]
@@ -123,7 +132,7 @@ function homeCtrl($http, $resource, IndexEpic) {
     }).then(function successCallback(response) {
       vm.detailsReturned = [];
       vm.detailsReturned.push(response.data);
-      console.log(vm.detailsReturned);
+      // console.log(vm.detailsReturned);
     });
   }
 

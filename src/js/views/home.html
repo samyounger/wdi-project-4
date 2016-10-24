@@ -1,11 +1,7 @@
+<h2>Search for a company (US only)</h2>
 <form action="index.html" method="post" autocomplete="off">
   <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="home.companySearch" list="companiesList" ng-change="home.getCompanyList()" autofocus="">
   <datalist id='companiesList'>
-    <!-- <datalist id='companiesList' ng-repeat="company as home.companyList">
-      <option></option>
-    </datalist> -->
-
-
     <option label='{{ home.companyList[0][0].Symbol }}' value='{{ home.companyList[0][0].Name }}'></option>
     <option label='{{ home.companyList[0][1].Symbol }}' value='{{ home.companyList[0][1].Name }}'></option>
     <option label='{{ home.companyList[0][2].Symbol }}' value='{{ home.companyList[0][2].Name }}'></option>
@@ -21,20 +17,14 @@
 </form>
 <div class="companyContainer" ng-hide="!home.companyData[0]">
   <div>
-    Name: {{ home.companyData[0].name }}
-  </div>
-  <div>
+    Name: {{ home.companyName }}<br>
+    Current Price: {{ home.detailsReturned[0][0].l_cur }}<br>
     Last Closing Price: {{ home.companyData[0].data[0][1] }} ({{ home.companyData[0].data[0][0] }})
   </div>
 
   <div id="container" style="width:100%; height:400px;"></div>
+  <p>
+    From {{ home.companyData[0].data[home.companyData[0].data.length - 1][0] }} to {{ home.companyData[0].data[0][0] }}
+  </p>
 
-  <div>
-    Current Price: {{ home.detailsReturned[0][0].l_cur }}
-  </div>
-
-  <div>
-    CompanyList: {{ home.companyList[0][0].Name }}
-    CompanyList: {{ home.companyList[0][0].Symbol }}
-  </div>
 </div>
