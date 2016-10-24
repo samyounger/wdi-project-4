@@ -1,16 +1,40 @@
-<form action="index.html" method="post">
-  <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="home.companyEpic">
+<form action="index.html" method="post" autocomplete="off">
+  <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="home.companySearch" list="companiesList" ng-change="home.getCompanyList()" autofocus="">
+  <datalist id='companiesList'>
+    <!-- <datalist id='companiesList' ng-repeat="company as home.companyList">
+      <option></option>
+    </datalist> -->
+
+
+    <option label='{{ home.companyList[0][0].Symbol }}' value='{{ home.companyList[0][0].Name }}'></option>
+    <option label='{{ home.companyList[0][1].Symbol }}' value='{{ home.companyList[0][1].Name }}'></option>
+    <option label='{{ home.companyList[0][2].Symbol }}' value='{{ home.companyList[0][2].Name }}'></option>
+    <option label='{{ home.companyList[0][3].Symbol }}' value='{{ home.companyList[0][3].Name }}'></option>
+    <option label='{{ home.companyList[0][4].Symbol }}' value='{{ home.companyList[0][4].Name }}'></option>
+    <option label='{{ home.companyList[0][5].Symbol }}' value='{{ home.companyList[0][5].Name }}'></option>
+    <option label='{{ home.companyList[0][6].Symbol }}' value='{{ home.companyList[0][6].Name }}'></option>
+    <option label='{{ home.companyList[0][7].Symbol }}' value='{{ home.companyList[0][7].Name }}'></option>
+    <option label='{{ home.companyList[0][8].Symbol }}' value='{{ home.companyList[0][8].Name }}'></option>
+    <option label='{{ home.companyList[0][9].Symbol }}' value='{{ home.companyList[0][9].Name }}'></option>
+  </datalist>
   <input type="submit" value="Submit" ng-click="home.getData()">
 </form>
-<div>
-  Name: {{ home.companyData[0].name }}
-</div>
-<div>
-  Last Closing Price: {{ home.companyData[0].data[0][1] }} ({{ home.companyData[0].data[0][0] }})
-</div>
+<div class="companyContainer" ng-hide="!home.companyData[0]">
+  <div>
+    Name: {{ home.companyData[0].name }}
+  </div>
+  <div>
+    Last Closing Price: {{ home.companyData[0].data[0][1] }} ({{ home.companyData[0].data[0][0] }})
+  </div>
 
-<div id="container" style="width:100%; height:400px;"></div>
+  <div id="container" style="width:100%; height:400px;"></div>
 
-<div>
-  Test: {{ home.indexResult }}
+  <div>
+    Current Price: {{ home.detailsReturned[0][0].l_cur }}
+  </div>
+
+  <div>
+    CompanyList: {{ home.companyList[0][0].Name }}
+    CompanyList: {{ home.companyList[0][0].Symbol }}
+  </div>
 </div>

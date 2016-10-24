@@ -47945,27 +47945,60 @@ E(k,["series","xAxis","yAxis"]))for(a[k]=g(a[k]),b[k]=[],r=0;r<a[k].length;r++)b
 "use strict";angular.module("bodhinomad").constant("API","http://localhost:3000/api");
 "use strict";angular.module("bodhinomad").factory("AuthInterceptor",AuthInterceptor);AuthInterceptor.$inject=['API','TokenService'];function AuthInterceptor(API,TokenService){return{request:function request(config){var token=TokenService.getToken();if(config.url.indexOf(API)===0&&token){config.headers.Authorization="Bearer "+token;}return config;},response:function response(res){if(res.config.url.indexOf(API)===0&&res.data.token){TokenService.setToken(res.data.token);}return res;}};}
 "use strict";angular.module("bodhinomad").service("CurrentUserService",CurrentUserService);CurrentUserService.$inject=["$rootScope","TokenService"];function CurrentUserService($rootScope,TokenService){var currentUser=TokenService.decodeToken();return{user:currentUser,saveUser:function saveUser(user){user.id=user._id?user._id:user.id;currentUser=user;$rootScope.$broadcast("loggedIn");},getUser:function getUser(){return currentUser;},clearUser:function clearUser(){currentUser=null;TokenService.clearToken();$rootScope.$broadcast("loggedOut");}};}
-"use strict";angular.module("bodhinomad").controller("userEditCtrl",userEditCtrl);userEditCtrl.$inject=["User","$stateParams","$state"];function userEditCtrl(User,$stateParams,$state){var vm=this;User.get($stateParams,function(data){vm.user=data.user;});vm.submit=function(){User.update($stateParams,{user:vm.user}).$promise.then(function(data){$state.go("userShow",$stateParams);});};}
 "use strict";
-"use strict";angular.module("bodhinomad").controller("homeCtrl",homeCtrl);homeCtrl.$inject=["$http","$resource","$scope"];function homeCtrl($http,$resource,$scope){var vm=this;vm.companyEpic="";vm.companyData=[];vm.chartData=[];vm.stockPrice=getStockPrice;vm.getData=function(){event.preventDefault();vm.companyData=[];// vm.chartData = [];
-$http({method:'GET',url:"https://www.quandl.com/api/v3/datasets/WIKI/"+vm.companyEpic+".json?api_key=s5sWLyV147fDnD7YssxU"}).then(function successCallback(response){vm.companyData.push(response.data.dataset);sortChartData();prepareChart();console.log(vm.chartData);},function errorCallback(response){});};function sortChartData(){for(var i=0;i<vm.companyData[0].data.length;i++){vm.chartData.push(vm.companyData[0].data[i][4]);}}function prepareChart(){var chart=new Highcharts.Chart(options);}var options={chart:{renderTo:'container',type:'line'},series:[{name:'Jane',data:vm.chartData}]};// Get an up to date stock price from Google Finance website
-vm.googleFinance=$resource('https://finance.google.com/finance/info',{client:'ig',callback:'JSON_CALLBACK'},{get:{method:'JSONP',params:{q:'INDEXSP:.INX'},isArray:true}});vm.indexResult=vm.googleFinance.get();function getStockPrice(){$resource('https://finance.google.com/finance/info',{client:'ig',callback:'JSON_CALLBACK'},{get:{method:'JSONP',params:{q:'INDEXSP:.INX'},isArray:true}});}// Type in the company name
+"use strict";angular.module("bodhinomad").controller("userEditCtrl",userEditCtrl);userEditCtrl.$inject=["User","$stateParams","$state"];function userEditCtrl(User,$stateParams,$state){var vm=this;User.get($stateParams,function(data){vm.user=data.user;});vm.submit=function(){User.update($stateParams,{user:vm.user}).$promise.then(function(data){$state.go("userShow",$stateParams);});};}
+"use strict";angular.module("bodhinomad").controller("homeCtrl",homeCtrl);homeCtrl.$inject=["$http","$resource","IndexEpic"];function homeCtrl($http,$resource,IndexEpic){var vm=this;// Search box processing input/output
+vm.companySearch="";vm.companyEpic="";vm.companyIndex="";vm.companyList=[];vm.getCompanyList=companyIndexEpic;// Chart Data
+vm.companyData=[];vm.companyPriceData=[];vm.companyDateData=[];// Google Finance input/output
+vm.detailsReturned=[];vm.getData=function(){event.preventDefault();vm.companyEpic=vm.companyList[0][0].Symbol;vm.companyIndex=vm.companyList[0][0].Exchange;vm.companyPriceData=[];vm.companyDateData=[];vm.companyData=[];$http({method:'GET',url:"https://www.quandl.com/api/v3/datasets/WIKI/"+vm.companyEpic+".json?api_key=s5sWLyV147fDnD7YssxU"}).then(function successCallback(response){vm.companyData.push(response.data.dataset);sortChartData();prepareChart();companyDetails();},function errorCallback(response){});};function sortChartData(){for(var i=0;i<vm.companyData[0].data.length;i++){vm.companyDateData.push(vm.companyData[0].data[i][0]);vm.companyPriceData.push(vm.companyData[0].data[i][4]);}}function prepareChart(){var chart=new Highcharts.Chart({chart:{renderTo:'container',type:'line'},title:{text:vm.companyData[0].name},xAxis:{title:{text:'Date'}},yAxis:{title:{text:'Price (USD)'}},series:[{showInLegend:false,data:vm.companyPriceData}]});}// Quote
+//   .query()
+//   .$promise
+//   .then(data => {
+//     console.log(data);
+//   });
+// Get an up to date stock price from Google Finance website
+// vm.googleFinance = $resource('https://finance.google.com/finance/info',{
+//   client:'ig',
+//   callback:'JSON_CALLBACK'
+// },{
+//   get: {
+//     method:'JSONP',
+//     // params:{q:'INDEXSP:.INX'},
+//     params:{q:`${vm.companyIndex}:${vm.companyEpic}`},
+//     // params:{q:'NASDAQ:MSFT'},
+//     isArray: true
+//   }}
+// );
+//
+// vm.indexResult = vm.googleFinance.get();
+// Type in the company name
 // Return the company EPIC code
 // http://dev.markitondemand.com/MODApis/Api/v2/Lookup/json?count=3&input=micro
-function getCompanyEpic(){$http({method:'GET',url:"http://dev.markitondemand.com/MODApis/Api/v2/Lookup/json",params:{count:3,input:"micro"}// headers: {
-//   'Content-Type': 'application/json'
-// }
-}).then(function successCallback(response){vm.companyEpic.push(response);console.log(response);},function errorCallback(response){});}getCompanyEpic();}
-"use strict";angular.module("bodhinomad").controller("usersIndexCtrl",usersIndexCtrl);usersIndexCtrl.$inject=["User"];function usersIndexCtrl(User){var vm=this;User.query().$promise.then(function(data){vm.users=data.users;});}
+function companyIndexEpic(){$http({method:'POST',url:"http://localhost:3000/api/company",data:{input:vm.companySearch}}).then(function successCallback(response){vm.companyList=[];vm.companyList.push(response.data);// console.log(vm.companyList);
+});}function companyDetails(){$http({method:'POST',url:"http://localhost:3000/api/getdetails",data:{q:vm.companyEpic}}).then(function successCallback(response){vm.detailsReturned=[];vm.detailsReturned.push(response.data);console.log(vm.detailsReturned);});}}
 "use strict";
+"use strict";angular.module("bodhinomad").controller("usersIndexCtrl",usersIndexCtrl);usersIndexCtrl.$inject=["User"];function usersIndexCtrl(User){var vm=this;User.query().$promise.then(function(data){vm.users=data.users;});}
+"use strict";angular.module("bodhinomad").factory("IndexEpic",IndexEpic);IndexEpic.$inject=["$http"];function IndexEpic($http){var companyName={};companyName.getName=function(companyName){return $http({method:'POST',url:"http://localhost:3000/api/test"}).then(function successCallback(response){homeCtrl.companyList=[];homeCtrl.companyList.push(response.data);console.log(homeCtrl.companyList);});};return companyName;}
 'use strict';angular.module("bodhinomad").config(SetupInterceptor);SetupInterceptor.$inject=['$httpProvider'];function SetupInterceptor($httpProvider){return $httpProvider.interceptors.push('AuthInterceptor');}
 "use strict";angular.module("bodhinomad").controller("loginCtrl",loginCtrl);loginCtrl.$inject=["User","CurrentUserService"];function loginCtrl(User,CurrentUserService){var vm=this;vm.login=function(){User.login(vm.user).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
-"use strict";angular.module("bodhinomad").controller("mainCtrl",mainCtrl);mainCtrl.$inject=["$rootScope","CurrentUserService","$state"];function mainCtrl($rootScope,CurrentUserService,$state){var vm=this;vm.user=CurrentUserService.getUser();vm.logout=function(){event.preventDefault();CurrentUserService.clearUser();};$rootScope.$on("loggedIn",function(){vm.user=CurrentUserService.getUser();$state.go("novelIndex");});$rootScope.$on("loggedOut",function(){vm.user=null;$state.go("home");});}
+"use strict";angular.module("bodhinomad").controller("mainCtrl",mainCtrl);mainCtrl.$inject=["$rootScope","CurrentUserService","$state"];function mainCtrl($rootScope,CurrentUserService,$state){var vm=this;vm.user=CurrentUserService.getUser();vm.logout=function(){event.preventDefault();CurrentUserService.clearUser();};$rootScope.$on("loggedIn",function(){vm.user=CurrentUserService.getUser();$state.go("home");});$rootScope.$on("loggedOut",function(){vm.user=null;$state.go("home");});}
 "use strict";
+"use strict";angular.module("bodhinomad").factory("Quote",Quote);Quote.$inject=["$resource"];function Quote($resource){return $resource('https://finance.google.com/finance/info',{client:'ig',callback:'JSON_CALLBACK'},{"query":{method:'JSONP',params:{q:'INDEXSP:.INX'},isArray:true}});}
 "use strict";angular.module("bodhinomad").controller("registerCtrl",registerCtrl);registerCtrl.$inject=["User","CurrentUserService"];function registerCtrl(User,CurrentUserService){var vm=this;vm.register=function(){User.register({user:vm.user}).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
 "use strict";angular.module("bodhinomad").config(Router);Router.$inject=["$stateProvider","$locationProvider","$urlRouterProvider"];function Router($stateProvider,$locationProvider,$urlRouterProvider){$locationProvider.html5Mode(true);$stateProvider.state("home",{url:"/",templateUrl:"/js/views/home.html",controller:"homeCtrl as home"}).state("register",{url:"/register",templateUrl:"/js/views/register.html",controller:"registerCtrl as register"}).state("login",{url:"/login",templateUrl:"/js/views/login.html",controller:"loginCtrl as login"})//users Router
 .state("usersIndex",{url:"/users/index",templateUrl:"/js/views/users/index.html",controller:"usersIndexCtrl as index"}).state('usersShow',{url:"/users/:id",templateUrl:"/js/views/users/show.html",controller:"usersShowCtrl as show"}).state('usersEdit',{url:"/novels/edit",templateUrl:"/js/views/users/edit.html",controller:"usersEditCtrl as edit"});$urlRouterProvider.otherwise("/");}
 "use strict";
 "use strict";angular.module("bodhinomad").controller("usersShowCtrl",usersShowCtrl);usersShowCtrl.$inject=["User","$stateParams","$state"];function usersShowCtrl(User,$stateParams,$state){var vm=this;User.get($stateParams,function(data){vm.user=data.user;vm.novels=data.novels;vm.entries=data.entries;});vm.userDelete=function(){User.delete($stateParams).$promise.then(function(data){$state.go("userIndex");});};}
+// angular
+// .module("bodhinomad")
+// .factory("Quote", Quote);
+//
+// Quote.$inject = ["$resource"];
+// function Quote($resource) {
+//   return    $resource('http://dev.markitondemand.com/MODApis/Api/v2/Lookup/json?count=3&input=micro', null, {
+//     'query':  { method: "JSONP", params: {callback: 'JSON_CALLBACK'}, isArray: false }
+//   });
+// }
+"use strict";
 "use strict";angular.module("bodhinomad").service("TokenService",TokenService);TokenService.$inject=["$window","jwtHelper"];function TokenService($window,jwtHelper){var self=this;self.setToken=setToken;self.getToken=getToken;self.decodeToken=decodeToken;self.clearToken=clearToken;function setToken(token){return $window.localStorage.setItem("auth-token",token);}function getToken(){return $window.localStorage.getItem("auth-token");}function decodeToken(){var token=self.getToken();return token?jwtHelper.decodeToken(token):null;}function clearToken(){return $window.localStorage.removeItem("auth-token");}}
 "use strict";angular.module("bodhinomad").factory("User",userFactory);userFactory.$inject=["API","$resource"];function userFactory(API,$resource){return $resource(API+"/users/:id",{id:"@_id"},{'query':{method:"GET",isArray:false},'register':{method:"POST",url:API+"/register"},'login':{method:"POST",url:API+"/login"}});}
