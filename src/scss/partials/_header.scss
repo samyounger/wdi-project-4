@@ -15,7 +15,8 @@ header {
         text-align: center;
         font-size: 20px;
         float: left;
-        width: 150px;
+        // width: 150px;
+        padding: 0 10px;
         &:hover {
           background: lightgrey;
         }

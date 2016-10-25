@@ -1,0 +1,26 @@
+<h2>User Show</h2>
+
+<h3>Portfolio</h3>
+
+<table>
+  <tr>
+    <td>Exchange</td>
+    <td>EPIC</td>
+    <td>Shares</td>
+    <td>Current Price</td>
+    <td>Book Value</td>
+    <td>Current Value</td>
+    <td>$ Profit/Loss</td>
+    <td>% Profit/Loss</td>
+  </tr>
+  <tr>
+    <td>{{ show.userTrades[0].exchange }}</td>
+    <td>{{ show.userTrades[0].epic }}</td>
+    <td>{{ show.userTrades[0].number_of_shares }}</td>
+    <td>{{ show.companyDetails[0][0].l_cur }}</td>
+    <td>{{ (show.userTrades[0].value).toFixed(2) }}</td>
+    <td>{{ (show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) }}</td>
+    <td>{{ (show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) - show.userTrades[0].value }}</td>
+    <td>{{ ((((show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) / show.userTrades[0].value) - 1) * 100).toFixed(2) }}</td>
+  </tr>
+</table>

@@ -1,9 +1,9 @@
 angular
 .module("bodhinomad")
-.controller("newCompanyCtrl", newCompanyCtrl);
+.controller("companiesNewCtrl", companiesNewCtrl);
 
-newCompanyCtrl.$inject = ["$http", "$resource", "IndexEpic", "CurrentUserService"];
-function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
+companiesNewCtrl.$inject = ["Trade", "$http", "$resource", "IndexEpic", "CurrentUserService", "$stateParams"];
+function companiesNewCtrl(Trade, $http, $resource, IndexEpic, CurrentUserService, $stateParams) {
   const vm = this;
 
   // Search box processing input/output
@@ -20,10 +20,21 @@ function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
 
   // Google Finance input/output
   vm.detailsReturned = [];
+  vm.companyDetails = companyDetails;
 
   // Filter company name
   vm.companyName = "";
 
+  // Processing trade
+  vm.valueCalculate = valueCalculate;
+  vm.value = "";
+
+  function valueCalculate(sharesNo, price) {
+    vm.value = sharesNo * price;
+    console.log(vm.value)
+  }
+
+  // Chart data request, & live price data request
   vm.getData = function(){
     event.preventDefault();
     vm.companyEpic = vm.companyList[0][0].Symbol;
@@ -37,7 +48,6 @@ function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
       url: "https://www.quandl.com/api/v3/datasets/WIKI/" + vm.companyEpic + ".json?api_key=s5sWLyV147fDnD7YssxU"
     }).then(function successCallback(response) {
       vm.companyData.push(response.data.dataset);
-      // console.log(vm.companyData)
       companyNameFilter();
       sortChartData();
       prepareChart();
@@ -84,34 +94,6 @@ function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
     });
   }
 
-  // Quote
-  //   .query()
-  //   .$promise
-  //   .then(data => {
-  //     console.log(data);
-  //   });
-
-
-  // Get an up to date stock price from Google Finance website
-  // vm.googleFinance = $resource('https://finance.google.com/finance/info',{
-  //   client:'ig',
-  //   callback:'JSON_CALLBACK'
-  // },{
-  //   get: {
-  //     method:'JSONP',
-  //     // params:{q:'INDEXSP:.INX'},
-  //     params:{q:`${vm.companyIndex}:${vm.companyEpic}`},
-  //     // params:{q:'NASDAQ:MSFT'},
-  //     isArray: true
-  //   }}
-  // );
-  //
-  // vm.indexResult = vm.googleFinance.get();
-
-  // Type in the company name
-  // Return the company EPIC code
-  // http://dev.markitondemand.com/MODApis/Api/v2/Lookup/json?count=3&input=micro
-
   function companyIndexEpic() {
     $http({
       method: 'POST',
@@ -120,7 +102,6 @@ function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
     }).then(function successCallback(response) {
       vm.companyList = [];
       vm.companyList.push(response.data);
-      // console.log(vm.companyList);
     });
   }
 
@@ -128,12 +109,28 @@ function newCompanyCtrl($http, $resource, IndexEpic, CurrentUserService) {
     $http({
       method: 'POST',
       url: "http://localhost:3000/api/getdetails",
-      data: { q: vm.companyEpic },
+      data: { q: `${vm.companyIndex}:${vm.companyEpic}` },
     }).then(function successCallback(response) {
       vm.detailsReturned = [];
       vm.detailsReturned.push(response.data);
-      // console.log(vm.detailsReturned);
     });
   }
 
+  vm.submitBuyTrade = () => {
+    Trade
+    .save($stateParams, {
+      trade_type: "buy",
+      epic: vm.companyEpic,
+      number_of_shares: vm.number_of_shares,
+      price: vm.detailsReturned[0][0].l_cur,
+      value: vm.value
+    }).$promise
+    .then(data => {
+      Trade.get($stateParams, data => {
+        console.log(data)
+      });
+    }).error(response => {
+      console.log(response)
+    });
+  };
 }

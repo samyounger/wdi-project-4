@@ -1,0 +1,20 @@
+<h2>Company Name...</h2>
+<div class="companyContainer" ng-hide="!new.companyData[0]">
+  <div>
+    Name: {{ new.companyName }}<br>
+    Current Price: {{ new.detailsReturned[0][0].l_cur }}<br>
+    Last Closing Price: {{ new.companyData[0].data[0][1] }} ({{ new.companyData[0].data[0][0] }})
+  </div>
+
+  <div id="container" style="width:100%; height:400px;"></div>
+  <p>
+    From {{ new.companyData[0].data[new.companyData[0].data.length - 1][0] }} to {{ new.companyData[0].data[0][0] }}
+  </p>
+
+  <div class="commentsContainer">
+    <h2>Comments here</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 <h2>Search for a company (US only)</h2>
-<form action="index.html" method="post" autocomplete="off">
+<form method="post" autocomplete="off">
   <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="new.companySearch" list="companiesList" ng-change="new.getCompanyList()" autofocus="">
   <datalist id='companiesList'>
     <option label='{{ new.companyList[0][0].Symbol }}' value='{{ new.companyList[0][0].Name }}'></option>
@@ -22,9 +22,52 @@
     Last Closing Price: {{ new.companyData[0].data[0][1] }} ({{ new.companyData[0].data[0][0] }})
   </div>
 
+  <!-- Trade container -->
+  <div class="tradeContainer">
+    <h2>Trade</h2>
+    <form ng-submit="new.submitBuyTrade()" name="tradeForm">
+
+      <div class="formGroup">
+        <label for="trade_type">Buy/Sell</label>
+        <input type="text" name="trade_type" value="buy">
+      </div>
+
+      <div class="formGroup">
+        <label for="epic">EPIC</label>
+        <input type="text" name="epic" ng-model="new.companyList[0][0].Symbol" readonly>
+      </div>
+
+      <div class="formGroup">
+        <label for="number">Buy Shares</label>
+        <input type="number" name="number" placeholder="Shares to buy" ng-model="new.number_of_shares" ng-change="new.valueCalculate(new.number_of_shares, new.detailsReturned[0][0].l_cur)">
+      </div>
+
+      <div class="formGroup">
+        <label for="price">Share Price (USD)</label>
+        <input type="text" name="price" ng-model="new.detailsReturned[0][0].l_cur" ng-change="new.valueCalculate(new.number_of_shares, new.price)" readonly>
+      </div>
+
+      <div class="formGroup">
+        <label for="value">Value of Purchase</label>
+        <input type="text" name="value" ng-model="new.value" value="{{ new.value }}" readonly>
+      </div>
+
+      <input type="submit" value="Buy">
+    </form>
+  </div>
+
+  <!-- Chart container -->
   <div id="container" style="width:100%; height:400px;"></div>
   <p>
     From {{ new.companyData[0].data[new.companyData[0].data.length - 1][0] }} to {{ new.companyData[0].data[0][0] }}
   </p>
+
+  <!-- Comments container -->
+  <div class="commentsContainer">
+    <h2>Comments here</h2>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+  </div>
 
 </div>

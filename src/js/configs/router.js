@@ -45,7 +45,17 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
     .state('companiesNew', {
       url: "/companies/new",
       templateUrl: "/js/views/companies/new.html",
-      controller: "newCompanyCtrl as new"
+      controller: "companiesNewCtrl as new"
+    })
+    .state('companiesShow', {
+      url: "/companies/:id",
+      templateUrl: "/js/views/companies/show.html",
+      controller: "companiesShowCtrl as show"
+    })
+    .state('companiesIndex', {
+      url: "/companies",
+      templateUrl: "/js/views/companies/index.html",
+      controller: "companiesIndexCtrl as index"
     });
 
   $urlRouterProvider.otherwise("/");
