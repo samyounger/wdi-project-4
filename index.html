@@ -6,9 +6,19 @@
   </head>
   <!-- <script src="/js/themes/gray.js"></script> -->
   <script type="text/javascript" src="/js/app.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
   <base href="/" />
-  <body>
-    <h1>BodhiNomad</h1>
+  <body ng-controller="mainCtrl as main">
+    <header>
+      <h1>BodhiNomad</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/register">Register</a></li>
+          <li><a href="/login">Login</a></li>
+        </ul>
+      </nav>
+    </header>
     <main ui-view></main>
   </body>
 </html>

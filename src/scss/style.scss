@@ -1,0 +1,23 @@
+@import "partials/header";
+@import "partials/forms";
+
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+form {
+  input {
+    width: 200px;
+    line-height: 50px;
+  }
+  .button {
+    width: 200px;
+    height: 50px;
+    color: red;
+  }
+}

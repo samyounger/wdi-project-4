@@ -1,10 +1,29 @@
 <h1>Register</h1>
 <form ng-submit="register.register()">
-  <input type="text" name="username" ng-model="register.user.username" placeholder="Username">
-  <input type="text" name="firstName" ng-model="register.user.firstName" placeholder="First name">
-  <input type="text" name="lastName" ng-model="register.user.lastName" placeholder="Last name">
-  <input type="email" name="email" ng-model="register.user.email" placeholder="Email">
-  <input type="password" name="password" ng-model="register.user.password" placeholder="Password">
-  <input type="password" name="passwordConfirmation" ng-model="register.user.passwordConfirmation" placeholder="Password confirmation">
+  <div class="formGroup">
+    <label for="username">UserName</label>
+    <input type="text" name="username" ng-model="register.user.username" placeholder="Username">
+  </div>
+
+  <div class="formGroup">
+    <label for="first_name">First Name</label>
+    <input type="text" name="first_name" ng-model="register.user.first_name" placeholder="First name">
+  </div>
+  <div class="formGroup">
+    <label for="last_name">Last Name</label>
+    <input type="text" name="last_name" ng-model="register.user.last_name" placeholder="Last name">
+  </div>
+  <div class="formGroup">
+    <label for="email">Email</label>
+    <input type="email" name="email" ng-model="register.user.email" placeholder="Email">
+  </div>
+  <div class="formGroup">
+    <label for="password">Password</label>
+    <input type="password" name="password" ng-model="register.user.password" placeholder="Password">
+  </div>
+  <div class="formGroup">
+    <label for="passwordConfirmation">Confirm Password</label>
+    <input type="password" name="password_confirmation" ng-model="register.user.password_confirmation" placeholder="Password confirmation">
+  </div>
   <input type="submit" value="Submit" />
 </form>

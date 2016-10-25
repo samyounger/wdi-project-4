@@ -2,8 +2,8 @@ angular
 .module("bodhinomad")
 .controller("homeCtrl", homeCtrl);
 
-homeCtrl.$inject = ["$http", "$resource", "IndexEpic"];
-function homeCtrl($http, $resource, IndexEpic) {
+homeCtrl.$inject = ["$http", "$resource", "IndexEpic", "CurrentUserService"];
+function homeCtrl($http, $resource, IndexEpic, CurrentUserService) {
   const vm = this;
 
   // Search box processing input/output
