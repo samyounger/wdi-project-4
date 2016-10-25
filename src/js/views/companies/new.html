@@ -1,0 +1,30 @@
+<h2>Search for a company (US only)</h2>
+<form action="index.html" method="post" autocomplete="off">
+  <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="new.companySearch" list="companiesList" ng-change="new.getCompanyList()" autofocus="">
+  <datalist id='companiesList'>
+    <option label='{{ new.companyList[0][0].Symbol }}' value='{{ new.companyList[0][0].Name }}'></option>
+    <option label='{{ new.companyList[0][1].Symbol }}' value='{{ new.companyList[0][1].Name }}'></option>
+    <option label='{{ new.companyList[0][2].Symbol }}' value='{{ new.companyList[0][2].Name }}'></option>
+    <option label='{{ new.companyList[0][3].Symbol }}' value='{{ new.companyList[0][3].Name }}'></option>
+    <option label='{{ new.companyList[0][4].Symbol }}' value='{{ new.companyList[0][4].Name }}'></option>
+    <option label='{{ new.companyList[0][5].Symbol }}' value='{{ new.companyList[0][5].Name }}'></option>
+    <option label='{{ new.companyList[0][6].Symbol }}' value='{{ new.companyList[0][6].Name }}'></option>
+    <option label='{{ new.companyList[0][7].Symbol }}' value='{{ new.companyList[0][7].Name }}'></option>
+    <option label='{{ new.companyList[0][8].Symbol }}' value='{{ new.companyList[0][8].Name }}'></option>
+    <option label='{{ new.companyList[0][9].Symbol }}' value='{{ new.companyList[0][9].Name }}'></option>
+  </datalist>
+  <input type="submit" class="button" value="Submit" ng-click="new.getData()">
+</form>
+<div class="companyContainer" ng-hide="!new.companyData[0]">
+  <div>
+    Name: {{ new.companyName }}<br>
+    Current Price: {{ new.detailsReturned[0][0].l_cur }}<br>
+    Last Closing Price: {{ new.companyData[0].data[0][1] }} ({{ new.companyData[0].data[0][0] }})
+  </div>
+
+  <div id="container" style="width:100%; height:400px;"></div>
+  <p>
+    From {{ new.companyData[0].data[new.companyData[0].data.length - 1][0] }} to {{ new.companyData[0].data[0][0] }}
+  </p>
+
+</div>

@@ -39,6 +39,13 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
       url: "/novels/edit",
       templateUrl: "/js/views/users/edit.html",
       controller: "usersEditCtrl as edit"
+    })
+
+    // companies Router
+    .state('companiesNew', {
+      url: "/companies/new",
+      templateUrl: "/js/views/companies/new.html",
+      controller: "newCompanyCtrl as new"
     });
 
   $urlRouterProvider.otherwise("/");

@@ -10,9 +10,9 @@ function IndexEpic($http) {
         method: 'POST',
         url: "http://localhost:3000/api/test"
       }).then(function successCallback(response) {
-        homeCtrl.companyList = [];
-        homeCtrl.companyList.push(response.data);
-        console.log(homeCtrl.companyList);
+        newCompanyCtrl.companyList = [];
+        newCompanyCtrl.companyList.push(response.data);
+        console.log(newCompanyCtrl.companyList);
       });
   };
   return companyName;
