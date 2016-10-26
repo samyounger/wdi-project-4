@@ -8,30 +8,49 @@ function usersShowCtrl(User, $stateParams, $state, $http){
 
   vm.userTrades = [];
   vm.companyDetails = [];
+  vm.tradesTotal = 0;
+  vm.tradeDetails = [];
 
   User
   .query($stateParams)
   .$promise
   .then(data => {
-    vm.userTrades = data[0].trades;
-    userTradesLoop(vm.userTrades);
+    vm.userTrades = data;
+    console.log(data)
+    callServiceForEachItem(vm.userTrades);
   });
 
-  // Iterate over userTrades running get request to google finance for current price
-  function userTradesLoop(trades) {
-    for(let i = 0; i < trades.length; i++) {
-      companyDetails(vm.userTrades[i].epic, vm.userTrades[i].exchange);
-    }
+  function callServiceForEachItem(trades) {
+    console.log(trades)
+    var promise;
+    angular.forEach(vm.userTrades, function(trade) {
+      // console.log(item)
+      if (!promise) {
+        promise = companyDetails(trade.epic, trade.exchange, trade);
+      }
+    });
   }
 
-  function companyDetails(epic, exchange) {
+  function companyDetails(epic, exchange, trade) {
+    // console.log(epic, exchange)
     $http({
       method: 'POST',
       url: "http://localhost:3000/api/getdetails",
       data: { q: `${exchange}:${epic}` },
     }).then(function successCallback(response) {
-      vm.companyDetails = [];
-      vm.companyDetails.push(response.data);
+      let tradeDetails = {
+        stockprice: ${response.data[0].l_cur},
+        exchange: ${response.data[0].l_cur}
+        shares: ${response.data[0].l_cur}
+        bookvalue: ${response.data[0].l_cur}
+        currentvalue: ${response.data[0].l_cur}
+        profitloss$: ${response.data[0].l_cur}
+        profitloss%: ${response.data[0].l_cur}
+       };
+      vm.tradeDetails.push(`${epic}: {
+
+      }`);
+      console.log(vm.tradeDetails)
     });
   }
 }
