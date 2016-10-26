@@ -14,6 +14,7 @@
       <td>Book Value</td>
       <td>$ Profit/Loss</td>
       <td>% Profit/Loss</td>
+      <td>Comments</td>
     </tr>
     <tr ng-repeat="trade in show.user.trades track by $index">
       <td>{{ trade.trade_type }}</td>
@@ -26,6 +27,7 @@
       <td>{{ trade.book_value }}</td>
       <td>{{ trade.dollarProfit }}</td>
       <td>{{ trade.percentageProfit }}</td>
+      <td>{{ trade.comments }}</td>
       <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)" ng-if="trade.trade_type!='sell'">
         Sell
       </button></td>

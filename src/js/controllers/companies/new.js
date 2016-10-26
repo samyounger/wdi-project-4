@@ -123,6 +123,7 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   };
 
   vm.submitBuyTrade = () => {
+    console.log(vm.trade)
     Trade
       .save({ trade: vm.trade }).$promise
       .then(data => {
