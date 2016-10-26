@@ -2,14 +2,14 @@ angular
   .module("bodhinomad")
   .service("CurrentUserService", CurrentUserService);
 
-CurrentUserService.$inject = ["$rootScope", "TokenService"];
-function CurrentUserService($rootScope, TokenService){
+CurrentUserService.$inject = ["$rootScope", "TokenService", "User"];
+function CurrentUserService($rootScope, TokenService, User){
   let currentUser = TokenService.decodeToken();
+  currentUser     = User.get(currentUser);
 
   return {
     user: currentUser,
     saveUser(user) {
-      user.id = user._id ? user._id : user.id;
       currentUser = user;
       $rootScope.$broadcast("loggedIn");
     },

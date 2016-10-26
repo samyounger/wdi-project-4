@@ -2,5 +2,6 @@ angular
 .module("bodhinomad", [
   "ui.router",
   "ngResource",
-  "angular-jwt"
+  "angular-jwt",
+  "ui.bootstrap"
 ]);

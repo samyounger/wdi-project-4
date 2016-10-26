@@ -1,73 +1,73 @@
+<div ng-if="new.error" class="alert alert-warning" role="alert">{{ new.error }}</div>
+
 <h2>Search for a company (US only)</h2>
-<form method="post" autocomplete="off">
-  <input type="text" name="stockName" placeholder="Enter stock name here" ng-model="new.companySearch" list="companiesList" ng-change="new.getCompanyList()" autofocus="">
-  <datalist id='companiesList'>
-    <option label='{{ new.companyList[0][0].Symbol }}' value='{{ new.companyList[0][0].Name }}'></option>
-    <option label='{{ new.companyList[0][1].Symbol }}' value='{{ new.companyList[0][1].Name }}'></option>
-    <option label='{{ new.companyList[0][2].Symbol }}' value='{{ new.companyList[0][2].Name }}'></option>
-    <option label='{{ new.companyList[0][3].Symbol }}' value='{{ new.companyList[0][3].Name }}'></option>
-    <option label='{{ new.companyList[0][4].Symbol }}' value='{{ new.companyList[0][4].Name }}'></option>
-    <option label='{{ new.companyList[0][5].Symbol }}' value='{{ new.companyList[0][5].Name }}'></option>
-    <option label='{{ new.companyList[0][6].Symbol }}' value='{{ new.companyList[0][6].Name }}'></option>
-    <option label='{{ new.companyList[0][7].Symbol }}' value='{{ new.companyList[0][7].Name }}'></option>
-    <option label='{{ new.companyList[0][8].Symbol }}' value='{{ new.companyList[0][8].Name }}'></option>
-    <option label='{{ new.companyList[0][9].Symbol }}' value='{{ new.companyList[0][9].Name }}'></option>
-  </datalist>
-  <input type="submit" class="button" value="Submit" ng-click="new.getData()">
-</form>
-<div class="companyContainer" ng-hide="!new.companyData[0]">
-  <div>
-    Name: {{ new.companyName }}<br>
-    Current Price: {{ new.detailsReturned[0][0].l_cur }}<br>
-    Last Closing Price: {{ new.companyData[0].data[0][1] }} ({{ new.companyData[0].data[0][0] }})
+<form name="getCompany" method="post" autocomplete="off" ng-submit="new.getData()">
+  <div class="form-group">
+    <input
+      type="text"
+      name="stockName"
+      placeholder="Enter stock name here"
+      ng-model="asyncSelected"
+      uib-typeahead="company.label for company in new.getCompany($viewValue)" typeahead-loading="loadingLocations"
+      typeahead-on-select="new.selectCompany($item, $model, $label)"
+      autofocus=""
+      class="form-control">
   </div>
 
+  <input type="submit" class="btn btn-primary pull-right" value="Submit">
+</form>
+
+<!-- Company Stats -->
+<section ng-show="new.company">
+  <ul>
+    <li><strong>Name:</strong> {{ new.company.label }}</li>
+    <li><strong>Current Price:</strong> {{ new.company.currentPrice }}</li>
+    <li><strong>Last Closing Price:</strong> {{ new.company.closingPrice }}</li>
+  </ul>
+
+  <!-- Chart container -->
+  <div id="container" style="width:100%; height:400px;"></div>
+
+  <!-- Trade -->
   <!-- Trade container -->
   <div class="tradeContainer">
     <h2>Trade</h2>
+
+    {{ new.trade }}
+
     <form ng-submit="new.submitBuyTrade()" name="tradeForm">
 
       <div class="formGroup">
         <label for="trade_type">Buy/Sell</label>
-        <input type="text" name="trade_type" value="buy">
+        <input type="text" id="trade_type" ng-model="new.trade.trade_type">
       </div>
 
       <div class="formGroup">
         <label for="epic">EPIC</label>
-        <input type="text" name="epic" ng-model="new.companyList[0][0].Symbol" readonly>
+        <input type="text" id="epic" ng-model="new.trade.epic" ng-bind="new.trade.epic = new.company.result.Symbol" readonly>
       </div>
 
       <div class="formGroup">
         <label for="number">Buy Shares</label>
-        <input type="number" name="number" placeholder="Shares to buy" ng-model="new.number_of_shares" ng-change="new.valueCalculate(new.number_of_shares, new.detailsReturned[0][0].l_cur)">
+        <input type="number" id="number" placeholder="Shares to buy" ng-model="new.trade.number_of_shares" ng-change="new.calculateValue()">
       </div>
 
       <div class="formGroup">
         <label for="price">Share Price (USD)</label>
-        <input type="text" name="price" ng-model="new.detailsReturned[0][0].l_cur" ng-change="new.valueCalculate(new.number_of_shares, new.price)" readonly>
+        <input type="text" id="price" ng-model="new.trade.price" ng-bind="new.trade.price = new.company.currentPrice" readonly>
       </div>
 
       <div class="formGroup">
         <label for="value">Value of Purchase</label>
-        <input type="text" name="value" ng-model="new.value" value="{{ new.value }}" readonly>
+        <input type="text" id="value" ng-model="new.trade.value" readonly>
       </div>
 
-      <input type="submit" value="Buy">
+      <div class="formGroup">
+        <label for="exchange">Exchange</label>
+        <input type="text" id="exchange" ng-model="new.trade.exchange" ng-bind="new.trade.exchange = new.company.result.Exchange" readonly>
+      </div>
+
+      <input type="submit" class="btn btn-primary pull-right" value="Buy">
     </form>
   </div>
-
-  <!-- Chart container -->
-  <div id="container" style="width:100%; height:400px;"></div>
-  <p>
-    From {{ new.companyData[0].data[new.companyData[0].data.length - 1][0] }} to {{ new.companyData[0].data[0][0] }}
-  </p>
-
-  <!-- Comments container -->
-  <div class="commentsContainer">
-    <h2>Comments here</h2>
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-    </p>
-  </div>
-
-</div>
+</section>

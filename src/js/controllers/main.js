@@ -15,11 +15,11 @@ function mainCtrl($rootScope, CurrentUserService, $state) {
 
   $rootScope.$on("loggedIn", () => {
     vm.user = CurrentUserService.getUser();
-    $state.go("home");
+    $state.go("companiesNew");
   });
 
   $rootScope.$on("loggedOut", () => {
     vm.user = null;
-    $state.go("home");
+    $state.go("companiesNew");
   });
 }

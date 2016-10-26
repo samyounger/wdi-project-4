@@ -1,29 +1,29 @@
 <h1>Register</h1>
 <form ng-submit="register.register()">
-  <div class="formGroup">
+  <div class="form-group">
     <label for="username">UserName</label>
-    <input type="text" name="username" ng-model="register.user.username" placeholder="Username">
+    <input type="text" name="username" ng-model="register.user.username" placeholder="Username" class="form-contol">
   </div>
 
-  <div class="formGroup">
+  <div class="form-group">
     <label for="first_name">First Name</label>
-    <input type="text" name="first_name" ng-model="register.user.first_name" placeholder="First name">
+    <input type="text" name="first_name" ng-model="register.user.first_name" placeholder="First name" class="form-contol">
   </div>
-  <div class="formGroup">
+  <div class="form-group">
     <label for="last_name">Last Name</label>
-    <input type="text" name="last_name" ng-model="register.user.last_name" placeholder="Last name">
+    <input type="text" name="last_name" ng-model="register.user.last_name" placeholder="Last name" class="form-contol">
   </div>
-  <div class="formGroup">
+  <div class="form-group">
     <label for="email">Email</label>
-    <input type="email" name="email" ng-model="register.user.email" placeholder="Email">
+    <input type="email" name="email" ng-model="register.user.email" placeholder="Email" class="form-contol">
   </div>
-  <div class="formGroup">
+  <div class="form-group">
     <label for="password">Password</label>
-    <input type="password" name="password" ng-model="register.user.password" placeholder="Password">
+    <input type="password" name="password" ng-model="register.user.password" placeholder="Password" class="form-contol">
   </div>
-  <div class="formGroup">
+  <div class="form-group">
     <label for="passwordConfirmation">Confirm Password</label>
-    <input type="password" name="password_confirmation" ng-model="register.user.password_confirmation" placeholder="Password confirmation">
+    <input type="password" name="password_confirmation" ng-model="register.user.password_confirmation" placeholder="Password confirmation" class="form-contol">
   </div>
-  <input type="submit" value="Submit" />
+  <input type="submit" value="Submit" class="btn btn-primary pull-right">
 </form>

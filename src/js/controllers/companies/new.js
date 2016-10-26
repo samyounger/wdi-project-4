@@ -2,69 +2,75 @@ angular
 .module("bodhinomad")
 .controller("companiesNewCtrl", companiesNewCtrl);
 
-companiesNewCtrl.$inject = ["Trade", "$http", "$resource", "IndexEpic", "CurrentUserService", "$stateParams"];
-function companiesNewCtrl(Trade, $http, $resource, IndexEpic, CurrentUserService, $stateParams) {
+companiesNewCtrl.$inject = ["Trade", "$http", "$resource", "CurrentUserService", "API", "$state"];
+function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $state) {
   const vm = this;
 
-  // Search box processing input/output
-  vm.companySearch = "";
-  vm.companyEpic = "";
-  vm.companyIndex = "";
-  vm.companyList = [];
-  vm.getCompanyList = companyIndexEpic;
+  vm.trade = {
+    trade_type: "buy"
+  };
 
-  // Chart Data
-  vm.companyData = [];
-  vm.companyPriceData = [];
-  vm.companyDateData = [];
-
-  // Google Finance input/output
-  vm.detailsReturned = [];
-  vm.companyDetails = companyDetails;
-
-  // Filter company name
-  vm.companyName = "";
-
-  // Processing trade
-  vm.valueCalculate = valueCalculate;
-  vm.value = "";
-
-  function valueCalculate(sharesNo, price) {
-    vm.value = sharesNo * price;
-    console.log(vm.value)
-  }
-
-  // Chart data request, & live price data request
-  vm.getData = function(){
-    event.preventDefault();
-    vm.companyEpic = vm.companyList[0][0].Symbol;
-    vm.companyIndex = vm.companyList[0][0].Exchange;
-
-    vm.companyPriceData = [];
-    vm.companyDateData = [];
-    vm.companyData = [];
-    $http({
-      method: 'GET',
-      url: "https://www.quandl.com/api/v3/datasets/WIKI/" + vm.companyEpic + ".json?api_key=s5sWLyV147fDnD7YssxU"
-    }).then(function successCallback(response) {
-      vm.companyData.push(response.data.dataset);
-      companyNameFilter();
-      sortChartData();
-      prepareChart();
-      companyDetails();
-    }, function errorCallback(response) {
+  vm.getCompany = function(val){
+    return $http({
+      method: 'POST',
+      url: `${API}/company`,
+      data: { input: val },
+      transformResponse: function (data, headersGetter, status) {
+        // Catch the error if there is a parsing the JSON
+        if (data) {
+          try {
+            data = JSON.parse(data);
+          } catch(e){
+            data = null;
+          }
+        }
+        return data;
+      }
+    }).then(function(response){
+      return response.data.map(function(item){
+        return {
+          label: `${item.Name} (${item.Symbol})`,
+          result: item
+        };
+      });
     });
   };
 
-  function sortChartData() {
-    for (var i = vm.companyData[0].data.length-1; i >= 0; i--) {
-      vm.companyDateData.push(vm.companyData[0].data[i][0]);
-      vm.companyPriceData.push(vm.companyData[0].data[i][11]);
-    }
-  }
+  vm.selectCompany = function($item, $model, $label){
+    vm.company = $item;
+  };
 
-  function companyNameFilter() {
-    vm.companyName = vm.companyData[0].name.slice(0, vm.companyData[0].name.indexOf(")")+1);
+  /*
+   * Get historic price data from Quandl
+   */
+  vm.getData = function(){
+    event.preventDefault();
+    return $http({
+      method: 'GET',
+      url: `https://www.quandl.com/api/v3/datasets/WIKI/${vm.company.result.Symbol}.json?api_key=s5sWLyV147fDnD7YssxU`
+    }).then(function successCallback(response) {
+      vm.company.dataset = response.data.dataset;
+      sortChartData();
+      getLivePrice();
+    }, function errorCallback(response) {
+      vm.error = response;
+    });
+  };
+
+  /*
+   * Sorting Quandl data for use in Highcharts
+   * - Create chart at the end
+   */
+  function sortChartData() {
+    vm.company.dateInformation  = [];
+    vm.company.priceInformation = [];
+
+    for (var i = vm.company.dataset.data.length-1; i >= 0; i--) {
+      vm.company.dateInformation.push(vm.company.dataset.data[i][0]);
+      vm.company.priceInformation.push(vm.company.dataset.data[i][11]);
+    }
+
+    return prepareChart();
   }
 
   function prepareChart() {
@@ -74,11 +80,15 @@ function companiesNewCtrl(Trade, $http, $resource, IndexEpic, CurrentUserService
         type: 'line',
       },
       title: {
-        text: vm.companyName,
+        text: vm.company.label,
       },
       xAxis: {
+        type: 'datetime',
         title: {
           text: 'Date'
+        },
+        dateTimeLabelFormats: {
+           day: '%d %b %Y'
         }
       },
       yAxis: {
@@ -87,50 +97,40 @@ function companiesNewCtrl(Trade, $http, $resource, IndexEpic, CurrentUserService
         }
       },
       series: [{
-        name: vm.companyName,
+        name: vm.company.label,
         showInLegend: false,
-        data: vm.companyPriceData
+        data: vm.company.priceInformation
       }]
     });
   }
 
-  function companyIndexEpic() {
-    $http({
+  function getLivePrice(){
+    return $http({
       method: 'POST',
-      url: "http://localhost:3000/api/company",
-      data: { input: vm.companySearch },
+      url: `${API}/getdetails`,
+      data: {
+        q: `${vm.company.result.Exchange}:${vm.company.result.Symbol}`
+      },
     }).then(function successCallback(response) {
-      vm.companyList = [];
-      vm.companyList.push(response.data);
+      vm.company.currentPrice = response.data[0].l_cur;
+      vm.company.closingPrice = response.data[0].l;
+    }, function errorCallback(response) {
+      vm.error = response;
     });
   }
 
-  function companyDetails() {
-    $http({
-      method: 'POST',
-      url: "http://localhost:3000/api/getdetails",
-      data: { q: `${vm.companyIndex}:${vm.companyEpic}` },
-    }).then(function successCallback(response) {
-      vm.detailsReturned = [];
-      vm.detailsReturned.push(response.data);
-    });
-  }
+  vm.calculateValue = function(){
+    vm.trade.value = vm.trade.number_of_shares * vm.company.currentPrice;
+  };
 
   vm.submitBuyTrade = () => {
     Trade
-    .save($stateParams, {
-      trade_type: "buy",
-      epic: vm.companyEpic,
-      number_of_shares: vm.number_of_shares,
-      price: vm.detailsReturned[0][0].l_cur,
-      value: vm.value
-    }).$promise
-    .then(data => {
-      Trade.get($stateParams, data => {
-        console.log(data)
+      .save({ trade: vm.trade }).$promise
+      .then(data => {
+        $state.go("usersShow", { id: CurrentUserService.getUser().id });
+      })
+      .catch(response => {
+        console.log(response);
       });
-    }).error(response => {
-      console.log(response)
-    });
   };
 }

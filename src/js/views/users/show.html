@@ -1,6 +1,5 @@
-<h2>User Show</h2>
-
-<h3>Portfolio</h3>
+<h2>Welcome back, {{ show.user.first_name }}</h2>
+<p>These are your trades:</p>
 
 <table>
   <tbody>
@@ -9,39 +8,30 @@
       <td>EPIC</td>
       <td>Shares</td>
       <td>Current Price</td>
-      <td>Book Value</td>
+      <td>Book Price</td>
       <td>Current Value</td>
+      <td>Book Value</td>
       <td>$ Profit/Loss</td>
       <td>% Profit/Loss</td>
     </tr>
-    <tr>
-      <td>{{ show.userTrades[0].exchange }}</td>
-      <td>{{ show.userTrades[0].epic }}</td>
-      <td>{{ show.userTrades[0].number_of_shares }}</td>
-      <td>{{ show.companyDetails[0][0].l_cur }}</td>
-      <td>{{ show.userTrades[0].value }}</td>
-      <td>{{ (show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) }}</td>
-      <td>{{ (show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) - show.userTrades[0].value }}</td>
-      <td>{{ ((((show.userTrades[0].number_of_shares * show.companyDetails[0][0].l_cur) / show.userTrades[0].value) - 1) * 100).toFixed(2) }}</td>
+    <tr ng-repeat="trade in show.user.trades track by $index">
+      <td>{{ trade.exchange }}</td>
+      <td>{{ trade.epic }}</td>
+      <td>{{ trade.number_of_shares }}</td>
+      <td>{{ trade.currentPrice }}</td>
+      <td>{{ trade.price }}</td>
+      <td>{{ trade.currentValue }}</td>
+      <td>{{ trade.value }}</td>
+      <td>{{ trade.dollarProfit }}</td>
+      <td>{{ trade.percentageProfit }}</td>
     </tr>
   </tbody>
   <tfoot>
     <tr>
-      <th id="total" colspan="4">Total :</th>
+      <th id="total" colspan="8">Total :</th>
       <td>
-        {{ show.tradesTotal }}
+        <strong>{{ show.user.totalDollarProfit }}</strong>
       </td>
     </tr>
   </tfoot>
 </table>
-
-
-<div>
-  Exchange: {{ show.userTrades[0].exchange }}
-</div>
-<div>
-  EPIC: {{ show.userTrades[0].epic }}
-</div>
-<div>
-  
-</div>

@@ -4,13 +4,12 @@ angular
 
 Trade.$inject = ["$resource", "API"];
 function Trade($resource, API) {
-  return $resource(`${API}/trades/:id`, { id: "@_id" }, {
-    'query':  { method: "GET", isArray: false },
+  return $resource(`${API}/trades/:id`, { id: "@id" }, {
     'update': { method: "PUT" },
     'addComment': {
       method: "PUT",
       url: `${API}/trades/:id/addcomment`,
-      params: { id: "@_id" }
+      params: { id: "@id" }
     }
   });
 }
