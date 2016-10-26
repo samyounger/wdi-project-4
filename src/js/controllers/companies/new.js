@@ -69,7 +69,6 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       vm.company.dateInformation.push(vm.company.dataset.data[i][0]);
       vm.company.priceInformation.push(vm.company.dataset.data[i][11]);
     }
-
     return prepareChart();
   }
 
@@ -120,17 +119,25 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   }
 
   vm.calculateValue = function(){
-    vm.trade.value = vm.trade.number_of_shares * vm.company.currentPrice;
+    vm.trade.book_value = vm.trade.number_of_shares * vm.company.currentPrice;
   };
 
   vm.submitBuyTrade = () => {
     Trade
       .save({ trade: vm.trade }).$promise
       .then(data => {
+        $("#myModal").modal("hide");
         $state.go("usersShow", { id: CurrentUserService.getUser().id });
       })
       .catch(response => {
         console.log(response);
       });
+  };
+
+  vm.tradeStock = (trade) => {
+    vm.trade = trade;
+    getLivePrice(trade);
+    vm.getData();
+    vm.trade.trade_type = "buy";
   };
 }
