@@ -38,6 +38,7 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
 
   vm.selectCompany = function($item, $model, $label){
     vm.company = $item;
+    vm.getData();
   };
 
   /*
@@ -45,21 +46,34 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   */
   vm.getData = function(){
     event.preventDefault();
+    vm.loadingMessage = "Loading...";
+    vm.dataLoading = true;
     return $http({
       method: 'GET',
       url: `https://www.quandl.com/api/v3/datasets/WIKI/${vm.company.result.Symbol}.json?api_key=s5sWLyV147fDnD7YssxU`
     }).then(function successCallback(response) {
+      vm.dataLoading = false;
       vm.company.dataset = response.data.dataset;
-      console.log(vm.company.dataset.data[0][0])
       sortChartData();
-      console.log(vm.company.dateInformation)
       getLivePrice();
 
       vm.getTradeComments();
     }, function errorCallback(response) {
       vm.error = response;
+      vm.loadingMessage = "Company not in database";
+      setTimeout(function(){
+        clearSearchBox();
+      },2000);
+
+      // document.getElementById("loadingMessage").innerHTML = "Company not in database";
     });
   };
+
+  function clearSearchBox() {
+    document.getElementById("stockSearch").value = "";
+    vm.company = null;
+    vm.dataLoading = false;
+  }
 
   /*
   * Sorting Quandl data for use in Highcharts
@@ -102,10 +116,6 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       },
       title: {
         text: vm.company.label,
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
       },
       plotOptions: {
         area: {
@@ -171,6 +181,7 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
     }).then(function successCallback(response) {
       vm.company.currentPrice = response.data[0].l_cur;
       vm.company.closingPrice = response.data[0].l;
+      console.log(response)
     }, function errorCallback(response) {
       vm.error = response;
     });
@@ -202,8 +213,9 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   vm.getTradeComments = () => {
     $http({
       method: 'GET',
-      url: `${API}/trades`,
+      url: `${API}/users`,
     }).then(function successCallback(response) {
+      console.log(response)
       vm.company.trades = response.data;
     }, function errorCallback(response) {
       vm.error = response;

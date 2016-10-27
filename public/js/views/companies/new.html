@@ -1,100 +1,109 @@
-<div ng-if="new.error" class="alert alert-warning" role="alert">{{ new.error }}</div>
+<div class="companySearch">
+  <!-- <div ng-if="new.error" class="alert alert-warning" role="alert">{{ new.error }}</div> -->
 
-<h2>Search for a company (US only)</h2>
-<form name="getCompany" method="post" autocomplete="off" ng-submit="new.getData()">
-  <div class="form-group">
-    <input
-    type="text"
-    name="stockName"
-    placeholder="Enter stock name here"
-    ng-model="asyncSelected"
-    uib-typeahead="company.label for company in new.getCompany($viewValue)" typeahead-loading="loadingLocations"
-    typeahead-on-select="new.selectCompany($item, $model, $label)"
-    autofocus=""
-    class="form-control">
-  </div>
+  <!-- <h2>Search for a company (US only)</h2> -->
+  <form name="getCompany" method="post" autocomplete="off" ng-submit="new.getData()">
+    <div class="form-group">
+      <label for="stockSearch">Company Name</label>
 
-  <input type="submit" class="btn btn-primary pull-right" value="Submit">
-</form>
-
-<!-- Company Stats -->
-<section ng-show="new.company">
-  <ul>
-    <li><strong>Name:</strong> {{ new.company.label }}</li>
-    <li><strong>Current Price:</strong> {{ new.company.currentPrice }}</li>
-    <li><strong>Last Closing Price:</strong> {{ new.company.closingPrice }}</li>
-  </ul>
-  <button type="button" class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal" ng-click="new.tradeStock(new.company)">
-    Buy
-  </button>
-
-  <!-- Chart container -->
-  <div id="container" style="width:100%; height:400px;"></div>
-
-</section>
-
-<!-- Buy Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Sell</h4>
+      <div class="input-group">
+        <span class="input-group-addon" id="basic-addon3">{{ new.company.result.Exchange }}/</span>
+        <input
+        type="text"
+        id="stockSearch"
+        placeholder="Enter stock name here"
+        ng-model="asyncSelected"
+        uib-typeahead="company.label for company in new.getCompany($viewValue)" typeahead-loading="loadingLocations"
+        typeahead-on-select="new.selectCompany($item, $model, $label)"
+        autofocus=""
+        class="form-control">
       </div>
-      <div class="modal-body">
 
-        <form ng-submit="new.submitBuyTrade()" name="tradeForm">
+    </div>
 
-          <div class="form-group">
-            <label for="trade_type">Buy/Sell</label>
-            <input type="text" id="trade_type" ng-model="new.trade.trade_type" class="form-control">
-          </div>
+    <!-- <input type="submit" class="btn btn-primary pull-right" value="Submit"> -->
+  </form>
 
-          <div class="form-group">
-            <label for="epic">EPIC</label>
-            <input type="text" id="epic" ng-model="new.trade.epic" ng-bind="new.trade.epic = new.company.result.Symbol" class="form-control" readonly>
-          </div>
+  <!-- Company Stats -->
+  <section ng-show="new.company">
+    <h3 ng-if="new.dataLoading" id="loadingMessage">{{ new.loadingMessage }}</h3>
+    <ul ng-if="!new.dataLoading">
+      <li><strong>Name:</strong> {{ new.company.label }}</li>
+      <li><strong>Current Price:</strong> {{ new.company.currentPrice }}</li>
+      <li><strong>Last Closing Price:</strong> {{ new.company.closingPrice }}</li>
+      <button type="button" class="btn btn-primary btn-lg form-control" data-toggle="modal" data-target="#myModal" ng-click="new.tradeStock(new.company)">
+        Buy
+      </button>
+    </ul>
 
-          <div class="form-group">
-            <label for="number">Buy Shares</label>
-            <input type="number" id="number" placeholder="Shares to buy" ng-model="new.trade.number_of_shares" class="form-control" ng-change="new.calculateValue()">
-          </div>
 
-          <div class="form-group">
-            <label for="price">Share Price (USD)</label>
-            <input type="text" id="price" ng-model="new.trade.price" ng-bind="new.trade.price = new.company.currentPrice" class="form-control" readonly>
-          </div>
+    <!-- Chart container -->
+    <div id="container" style="width:100%; height:400px;"></div>
 
-          <div class="form-group">
-            <label for="book_value">Value of Purchase</label>
-            <input type="text" id="book_value" ng-model="new.trade.book_value" class="form-control" readonly>
-          </div>
+    <!-- Comments container -->
+    <div class="commentsContainer" ng-if="!new.dataLoading">
+      <h2>Comments</h2>
+      <ul ng-repeat="trade in new.company.trades | orderBy:'-'">
+        <li>{{ trade.trade_type }} | {{ trade.comments }}</li>
+      </ul>
+    </div>
 
-          <div class="form-group">
-            <label for="exchange">Exchange</label>
-            <input type="text" id="exchange" ng-model="new.trade.exchange" ng-bind="new.trade.exchange = new.company.result.Exchange" class="form-control" readonly>
-          </div>
+  </section>
 
-          <div class="form-group">
-            <label for="comments">Comments</label>
-            <textarea id=comments ng-model="new.trade.comments" class="form-control"></textarea>
-          </div>
+  <!-- Buy Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Buy {{ new.company.label }}</h4>
+        </div>
+        <div class="modal-body">
 
-          <input type="submit" class="btn btn-primary pull-right" value="Buy">
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Sell</button> -->
+          <form ng-submit="new.submitBuyTrade()" name="tradeForm">
+
+            <div class="form-group">
+              <!-- <label for="trade_type">Buy/Sell</label> -->
+              <input type="hidden" id="trade_type" ng-model="new.trade.trade_type" class="form-control" readonly="">
+            </div>
+
+            <div class="form-group">
+              <!-- <label for="epic">EPIC</label> -->
+              <input type="hidden" id="epic" ng-model="new.trade.epic" ng-bind="new.trade.epic = new.company.result.Symbol" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="number">Number of shares</label>
+              <input type="number" id="number" placeholder="Shares to buy" ng-model="new.trade.number_of_shares" class="form-control" ng-change="new.calculateValue()" autofocus="">
+            </div>
+
+            <div class="form-group">
+              <label for="price">Share Price (USD)</label>
+              <input type="text" id="price" ng-model="new.trade.price" ng-bind="new.trade.price = new.company.currentPrice" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="book_value">Value of Purchase</label>
+              <input type="text" id="book_value" ng-model="new.trade.book_value" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="exchange">Exchange</label>
+              <input type="text" id="exchange" ng-model="new.trade.exchange" ng-bind="new.trade.exchange = new.company.result.Exchange" class="form-control" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="comments">Comments</label>
+              <textarea id=comments ng-model="new.trade.comments" class="form-control"></textarea>
+            </div>
+
+            <!-- <input type="submit" class="btn btn-primary pull-right" value="Buy"> -->
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Buy</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Comments container -->
-<div class="commentsContainer">
-  <h2>Comments</h2>
-  <ul ng-repeat="trade in new.company.trades">
-    <li>{{ trade.trade_type }} | {{ trade.comments }}</li>
-  </ul>
 </div>

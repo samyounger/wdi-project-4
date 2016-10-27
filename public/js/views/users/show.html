@@ -1,127 +1,134 @@
-<h2>Welcome back, {{ show.user.username }}</h2>
-<p>These are your trades:</p>
+<div class="portfolioContainer">
+  <h2>Welcome back, {{ show.user.username }}</h2>
+  <h3>Portfolio Summary</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Exchange</th>
+        <th>EPIC</th>
+        <th>Shares</th>
+        <th>Book Value</th>
+        <th>Current Value</th>
+        <th>$ Profit/Loss</th>
+        <th>% Profit/Loss</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="trade in show.user.trades_by_epic track by $index">
+        <td>{{ trade.exchange }}</td>
+        <td>{{ trade.epic }}</td>
+        <td>{{ trade.number_of_shares }}</td>
+        <td>{{ trade.book_value }}</td>
+        <td>{{ trade.currentValue }}</td>
+        <td>{{ trade.dollarProfit }}</td>
+        <td>{{ trade.percentageProfit }}</td>
+        <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)">
+          Sell
+        </button></td>
+      </tr>
+    </tbody>
+  </table>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Exchange</td>
-      <td>EPIC</td>
-      <td>Shares</td>
-      <td>Book Value</td>
-      <td>Current Value</td>
-      <td>$ Profit/Loss</td>
-      <td>% Profit/Loss</td>
-      <td>Action</td>
-    </tr>
-    <tr ng-repeat="trade in show.user.trades_by_epic track by $index">
-      <td>{{ trade.exchange }}</td>
-      <td>{{ trade.epic }}</td>
-      <td>{{ trade.number_of_shares }}</td>
-      <td>{{ trade.book_value }}</td>
-      <td>{{ trade.currentValue }}</td>
-      <td>{{ trade.dollarProfit }}</td>
-      <td>{{ trade.percentageProfit }}</td>
-      <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)">
-        Sell
-      </button></td>
-    </tr>
-  </tbody>
-</table>
+  <h3>Trades</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Buy/Sell</th>
+        <th>Exchange</th>
+        <th>EPIC</th>
+        <th>Shares</th>
+        <th>Current Price</th>
+        <th>Book Price</th>
+        <th>Current Value</th>
+        <th>Book Value</th>
+        <th>$ Profit/Loss</th>
+        <th>% Profit/Loss</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="trade in show.user.trades | orderBy:'-'">
+        <td>{{ trade.trade_type }}</td>
+        <td>{{ trade.exchange }}</td>
+        <td>{{ trade.epic }}</td>
+        <td>{{ trade.number_of_shares }}</td>
+        <td>{{ trade.currentPrice }}</td>
+        <td>{{ trade.price }}</td>
+        <td>{{ trade.currentValue }}</td>
+        <td>{{ trade.book_value }}</td>
+        <td>{{ trade.dollarProfit }}</td>
+        <td>{{ trade.percentageProfit }}</td>
+        <td>{{ trade.comments }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th id="total" colspan="8">Total :</th>
+        <td>
+          <strong>{{ show.user.totalDollarProfit.toFixed(2) }}</strong>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 
-<table>
-  <tbody>
-    <tr>
-      <td>Buy/Sell</td>
-      <td>Exchange</td>
-      <td>EPIC</td>
-      <td>Shares</td>
-      <td>Current Price</td>
-      <td>Book Price</td>
-      <td>Current Value</td>
-      <td>Book Value</td>
-      <td>$ Profit/Loss</td>
-      <td>% Profit/Loss</td>
-      <td>Comments</td>
-    </tr>
-    <tr ng-repeat="trade in show.user.trades track by $index">
-      <td>{{ trade.trade_type }}</td>
-      <td>{{ trade.exchange }}</td>
-      <td>{{ trade.epic }}</td>
-      <td>{{ trade.number_of_shares }}</td>
-      <td>{{ trade.currentPrice }}</td>
-      <td>{{ trade.price }}</td>
-      <td>{{ trade.currentValue }}</td>
-      <td>{{ trade.book_value }}</td>
-      <td>{{ trade.dollarProfit }}</td>
-      <td>{{ trade.percentageProfit }}</td>
-      <td>{{ trade.comments }}</td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <th id="total" colspan="8">Total :</th>
-      <td>
-        <strong>{{ show.user.totalDollarProfit.toFixed(2) }}</strong>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
-
-<!-- Buy/Sell Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Sell</h4>
-      </div>
-      <div class="modal-body">
-
-        <div id="container" style="width:100%; height:400px;"></div>
-
-        <form ng-submit="show.submitSellTrade()" name="tradeForm">
-
-          <div class="form-group">
-            <label for="trade_type">Buy/Sell</label>
-            <input type="text" id="trade_type" ng-model="show.trade.trade_type" readonly="" class="form-control">
+  <!-- Buy/Sell Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Sell {{ show.trade.epic }}</h4>
+        </div>
+        <div class="modal-body">
+          <h3 ng-if="show.dataLoading" style="margin-bottom: -200px">Loading chart</h3>
+          <div id="container" style="max-width: 100%" >
           </div>
 
-          <div class="form-group">
-            <label for="epic">EPIC</label>
-            <input type="text" id="epic" ng-model="show.trade.epic" readonly="" class="form-control">
-          </div>
+          <form ng-submit="show.submitSellTrade()" name="tradeForm">
 
-          <div class="form-group">
-            <label for="exchange">Exchange</label>
-            <input type="text" id="exchange" ng-model="show.trade.exchange" readonly="" class="form-control">
-          </div>
+            <div class="form-group">
+              <label for="trade_type">Trade type</label>
+              <input type="text" id="trade_type" ng-model="show.trade.trade_type" readonly="" class="form-control">
+            </div>
 
-          <div class="form-group">
-            <label for="number_of_shares">Shares no.</label>
-            <input type="text" id="number_of_shares" ng-model="show.trade.number_of_shares" class="form-control">
-          </div>
+            <div class="form-group">
+              <label for="epic">EPIC</label>
+              <input type="text" id="epic" ng-model="show.trade.epic" readonly="" class="form-control">
+            </div>
 
-          <div class="form-group">
-            <label for="price">Current Price</label>
-            <input type="text" id="price" ng-model="show.trade.currentPrice" readonly="" class="form-control">
-          </div>
+            <div class="form-group">
+              <label for="exchange">Exchange</label>
+              <input type="text" id="exchange" ng-model="show.trade.exchange" readonly="" class="form-control">
+            </div>
 
-          <div class="form-group">
-            <label for="sale_value">Sale Value</label>
-            <input type="text" id="price" ng-model="show.trade.sale_value" ng-bind="show.trade.sale_value = show.trade.number_of_shares * show.trade.currentPrice" readonly="" class="form-control">
-          </div>
+            <div class="form-group">
+              <label for="number_of_shares">Shares no.</label>
+              <input type="text" id="number_of_shares" ng-model="show.trade.number_of_shares" class="form-control" autofocus="">
+            </div>
 
-          <div class="form-group">
-            <input type="submit" class="btn btn-primary pull-right" value="Sell">
-          </div>
+            <div class="form-group">
+              <label for="price">Current Price</label>
+              <input type="text" id="price" ng-model="show.trade.currentPrice" readonly="" class="form-control">
+            </div>
 
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <!-- <button type="button" class="btn btn-primary">Sell</button> -->
+            <div class="form-group">
+              <label for="sale_value">Sale Value</label>
+              <input type="text" id="price" ng-model="show.trade.sale_value" ng-bind="show.trade.sale_value = show.trade.number_of_shares * show.trade.currentPrice" readonly="" class="form-control">
+            </div>
+
+            <div class="form-group">
+              <input type="submit" class="btn btn-primary pull-right" value="Sell">
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn btn-primary">Sell</button> -->
+        </div>
       </div>
     </div>
   </div>
+
 </div>

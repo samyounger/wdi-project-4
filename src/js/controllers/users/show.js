@@ -50,10 +50,12 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
 
   vm.getData = function(){
     event.preventDefault();
+    vm.dataLoading = true;
     return $http({
       method: 'GET',
       url: `https://www.quandl.com/api/v3/datasets/WIKI/${vm.trade.epic}.json?api_key=s5sWLyV147fDnD7YssxU`
     }).then(function successCallback(response) {
+      vm.dataLoading = false;
       vm.trade.dataset = response.data.dataset;
       sortChartData();
     }, function errorCallback(response) {
@@ -78,8 +80,9 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
   }
 
   function prepareChart() {
-    var chart = new Highcharts.Chart({
+    vm.chart = new Highcharts.Chart({
       chart: {
+        loading: true,
         renderTo: 'container',
         type: 'line',
         height: 200,
@@ -87,10 +90,6 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
       },
       title: {
         text: "",
-      },
-      subtitle: {
-        text: document.ontouchstart === undefined ?
-        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
       },
       plotOptions: {
         area: {

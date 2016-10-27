@@ -1,3 +1,25 @@
 @import "bower";
 
+@import "variables/colors";
+@import "variables/font-stack";
 @import "modules/typeahead";
+@import "partials/portfolio";
+@import "partials/companySearch";
+@import "partials/table";
+@import "partials/header";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font: $font-stack;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+  background: lighten($primary-color, 25%);
+  line-height: 0.333333;
+  &:hover {
+    background: lighten($primary-color, 35%);
+  }
+}

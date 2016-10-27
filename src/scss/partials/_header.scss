@@ -1,0 +1,16 @@
+header {
+  font-size: 22px;
+  font-weight: 200;
+}
+
+.navbar-brand {
+  font-size: 22px;
+}
+
+.navbar {
+  background: lighten($primary-color, 20%);
+}
+
+.navbar-default .navbar-nav>li>a, .navbar-default .navbar-text, .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand  {
+  color: lighten($primary-color, 95%);
+}

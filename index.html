@@ -6,6 +6,7 @@
   </head>
   <!-- <script src="/js/themes/gray.js"></script> -->
   <script type="text/javascript" src="/js/app.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:100,400,700" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   <base href="/" />
   <body ng-controller="mainCtrl as main">
@@ -30,10 +31,10 @@
                 <a ui-sref="companiesNew">Search companies</a>
               </li>
               <li ng-show="main.user">
-                <a ui-sref="companiesIndex">Companies</a>
+                <a ui-sref="companiesIndex">Trades</a>
               </li>
               <li ng-show="main.user">
-                <a ui-sref="usersShow({id: main.user.id})">Profile</a>
+                <a ui-sref="usersShow({id: main.user.id})">Portfolio</a>
               </li>
               <li ng-hide="main.user">
                 <a ui-sref="register">Register</a>
