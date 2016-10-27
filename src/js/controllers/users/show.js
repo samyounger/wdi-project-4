@@ -11,13 +11,14 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
   .then(user => {
     vm.user = user;
     vm.user.totalDollarProfit = 0;
+    vm.user.totalPortfolioValue = 0;
     user.trades.forEach((trade, index) => getLivePrice(trade, index));
     user.trades_by_epic.forEach((trade, index) => getLivePrice(trade, index));
   });
 
   vm.tradeStock = (trade) => {
     document.getElementById("container").style.height="200px";
-    vm.trade = trade
+    vm.trade = trade;
     getLivePrice(trade);
     vm.getData();
     vm.trade.trade_type = "sell";
@@ -35,13 +36,14 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
     .then(function successCallback(response) {
       trade.currentPrice     = parseFloat(response.data[0].l_cur);
       if(vm.trade) vm.trade.currentPrice = parseFloat(response.data[0].l_cur);
-      trade.currentValue     = parseFloat(trade.currentPrice * trade.number_of_shares).toFixed(2);
+      trade.currentValue     = trade.currentPrice * trade.number_of_shares;
       trade.dollarProfit     = Math.floor((trade.currentValue - trade.book_value) * 100)/100;
       trade.percentageProfit = Number((trade.currentValue/trade.book_value)-1).toFixed(2);
       // update user's trade with augmented trade object
       vm.user.trades[index] = trade;
       // Increment profit
       vm.user.totalDollarProfit += trade.dollarProfit;
+      vm.user.totalPortfolioValue += trade.currentValue;
     }, function errorCallback(response) {
       vm.error = response;
     });
@@ -157,6 +159,7 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
         vm.user = user;
         vm.user.totalDollarProfit = 0;
         user.trades.forEach((trade, index) => getLivePrice(trade, index));
+        user.trades_by_epic.forEach((trade, index) => getLivePrice(trade, index));
       });
       // Want to reload page to see new trades. or 'push' data to end of table?
     })

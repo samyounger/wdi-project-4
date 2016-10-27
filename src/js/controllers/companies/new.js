@@ -181,7 +181,6 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
     }).then(function successCallback(response) {
       vm.company.currentPrice = response.data[0].l_cur;
       vm.company.closingPrice = response.data[0].l;
-      console.log(response)
     }, function errorCallback(response) {
       vm.error = response;
     });
@@ -213,9 +212,8 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   vm.getTradeComments = () => {
     $http({
       method: 'GET',
-      url: `${API}/users`,
+      url: `${API}/trades`,
     }).then(function successCallback(response) {
-      console.log(response)
       vm.company.trades = response.data;
     }, function errorCallback(response) {
       vm.error = response;

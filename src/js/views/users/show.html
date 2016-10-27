@@ -15,12 +15,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="trade in show.user.trades_by_epic track by $index">
+      <tr ng-repeat="trade in show.user.trades_by_epic | orderBy:'epic'">
         <td>{{ trade.exchange }}</td>
         <td>{{ trade.epic }}</td>
         <td>{{ trade.number_of_shares }}</td>
         <td>{{ trade.book_value }}</td>
-        <td>{{ trade.currentValue }}</td>
+        <td>{{ trade.currentValue.toFixed(2) }}</td>
         <td>{{ trade.dollarProfit }}</td>
         <td>{{ trade.percentageProfit }}</td>
         <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)">
@@ -28,45 +28,11 @@
         </button></td>
       </tr>
     </tbody>
-  </table>
-
-  <h3>Trades</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Buy/Sell</th>
-        <th>Exchange</th>
-        <th>EPIC</th>
-        <th>Shares</th>
-        <th>Current Price</th>
-        <th>Book Price</th>
-        <th>Current Value</th>
-        <th>Book Value</th>
-        <th>$ Profit/Loss</th>
-        <th>% Profit/Loss</th>
-        <th>Comments</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="trade in show.user.trades | orderBy:'-'">
-        <td>{{ trade.trade_type }}</td>
-        <td>{{ trade.exchange }}</td>
-        <td>{{ trade.epic }}</td>
-        <td>{{ trade.number_of_shares }}</td>
-        <td>{{ trade.currentPrice }}</td>
-        <td>{{ trade.price }}</td>
-        <td>{{ trade.currentValue }}</td>
-        <td>{{ trade.book_value }}</td>
-        <td>{{ trade.dollarProfit }}</td>
-        <td>{{ trade.percentageProfit }}</td>
-        <td>{{ trade.comments }}</td>
-      </tr>
-    </tbody>
     <tfoot>
       <tr>
-        <th id="total" colspan="8">Total :</th>
+        <th id="total" colspan="4">Total :</th>
         <td>
-          <strong>{{ show.user.totalDollarProfit.toFixed(2) }}</strong>
+          <strong>{{ show.user.totalPortfolioValue.toFixed(2) }}</strong>
         </td>
       </tr>
     </tfoot>
@@ -85,21 +51,21 @@
           <div id="container" style="max-width: 100%" >
           </div>
 
-          <form ng-submit="show.submitSellTrade()" name="tradeForm">
+          <form ng-submit="show.submitSellTrade()" name="tradeForm" autocomplete="off">
 
             <div class="form-group">
-              <label for="trade_type">Trade type</label>
-              <input type="text" id="trade_type" ng-model="show.trade.trade_type" readonly="" class="form-control">
+              <!-- <label for="trade_type">Trade type</label> -->
+              <input type="hidden" id="trade_type" ng-model="show.trade.trade_type" readonly="" class="form-control">
             </div>
 
             <div class="form-group">
-              <label for="epic">EPIC</label>
-              <input type="text" id="epic" ng-model="show.trade.epic" readonly="" class="form-control">
+              <!-- <label for="epic">EPIC</label> -->
+              <input type="hidden" id="epic" ng-model="show.trade.epic" readonly="" class="form-control">
             </div>
 
             <div class="form-group">
-              <label for="exchange">Exchange</label>
-              <input type="text" id="exchange" ng-model="show.trade.exchange" readonly="" class="form-control">
+              <!-- <label for="exchange">Exchange</label> -->
+              <input type="hidden" id="exchange" ng-model="show.trade.exchange" readonly="" class="form-control">
             </div>
 
             <div class="form-group">
@@ -117,15 +83,11 @@
               <input type="text" id="price" ng-model="show.trade.sale_value" ng-bind="show.trade.sale_value = show.trade.number_of_shares * show.trade.currentPrice" readonly="" class="form-control">
             </div>
 
-            <div class="form-group">
+            <div class="modal-footer">
               <input type="submit" class="btn btn-primary pull-right" value="Sell">
             </div>
 
           </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <!-- <button type="button" class="btn btn-primary">Sell</button> -->
         </div>
       </div>
     </div>

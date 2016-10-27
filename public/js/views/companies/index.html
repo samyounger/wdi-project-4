@@ -1,8 +1,41 @@
-<h2>Companies Index Page</h2>
-<div class="companyContainer">
-  <!-- Comments container -->
-    <h2>Comments</h2>
-    <ul ng-repeat="trade in index.company.trades">
-      <li>{{  trade.epic }}: {{ trade.trade_type }} | {{ trade.comments }}</li>
-    </ul>
-</div>
+<h3>Trades</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Buy/Sell</th>
+      <th>Exchange</th>
+      <th>EPIC</th>
+      <th>Shares</th>
+      <th>Current Price</th>
+      <th>Book Price</th>
+      <th>Current Value</th>
+      <th>Book Value</th>
+      <th>$ Profit/Loss</th>
+      <th>% Profit/Loss</th>
+      <th>Comments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="trade in index.user.trades | orderBy:'-'">
+      <td>{{ trade.trade_type }}</td>
+      <td>{{ trade.exchange }}</td>
+      <td>{{ trade.epic }}</td>
+      <td>{{ trade.number_of_shares }}</td>
+      <td>{{ trade.currentPrice }}</td>
+      <td>{{ trade.price }}</td>
+      <td>{{ trade.currentValue.toFixed(2) }}</td>
+      <td>{{ trade.book_value }}</td>
+      <td>{{ trade.dollarProfit }}</td>
+      <td>{{ trade.percentageProfit }}</td>
+      <td>{{ trade.comments }}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th id="total" colspan="8">Total :</th>
+      <td>
+        <strong>{{ index.user.totalDollarProfit.toFixed(2) }}</strong>
+      </td>
+    </tr>
+  </tfoot>
+</table>
