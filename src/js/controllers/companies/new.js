@@ -50,7 +50,9 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       url: `https://www.quandl.com/api/v3/datasets/WIKI/${vm.company.result.Symbol}.json?api_key=s5sWLyV147fDnD7YssxU`
     }).then(function successCallback(response) {
       vm.company.dataset = response.data.dataset;
+      console.log(vm.company.dataset.data[0][0])
       sortChartData();
+      console.log(vm.company.dateInformation)
       getLivePrice();
 
       vm.getTradeComments();
@@ -68,8 +70,21 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
     vm.company.priceInformation = [];
 
     for (var i = vm.company.dataset.data.length-1; i >= 0; i--) {
-      let date = Date.parse(vm.company.dataset.data[i][0]+" UTC");
-      vm.company.dateInformation.push(date);
+      let date = vm.company.dataset.data[i][0];
+      let year = date.slice(0,4),
+          month = date.slice(5, 7),
+          day = date.slice(8, 10);
+
+      date = `${day}/${month}/${year}`;
+
+      var parts =date.split('/');
+      //please put attention to the month (parts[0]), Javascript counts months from 0:
+      // January - 0, February - 1, etc
+      var mydate = new Date(parts[2],parts[0]-1,parts[1]);
+
+      // date = new Date(date);
+
+      vm.company.dateInformation.push(mydate);
       vm.company.priceInformation.push(vm.company.dataset.data[i][11]);
     }
     return prepareChart();
@@ -80,7 +95,10 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       chart: {
         renderTo: 'container',
         type: 'line',
-        zoomType: 'x'
+        zoomType: 'x',
+        rangeSelector: {
+          selected: 1
+        },
       },
       title: {
         text: vm.company.label,
@@ -135,7 +153,6 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       series: [{
         type: 'area',
         name: vm.company.label,
-        // showInLegend: false,
         data: vm.company.priceInformation,
         tooltip: {
           valueDecimals: 2
@@ -188,8 +205,7 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       url: `${API}/trades`,
     }).then(function successCallback(response) {
       vm.company.trades = response.data;
-      console.log(response.data)
     }, function errorCallback(response) {
       vm.error = response;
     });  };
-}
+  }

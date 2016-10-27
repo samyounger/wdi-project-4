@@ -5,6 +5,7 @@ angular
 Trade.$inject = ["$resource", "API"];
 function Trade($resource, API) {
   return $resource(`${API}/trades/:id`, { id: "@id" }, {
+    // 'get': { method: "GET", isArray: false },
     'update': { method: "PUT" },
     'addComment': {
       method: "PUT",

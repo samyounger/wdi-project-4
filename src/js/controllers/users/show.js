@@ -12,11 +12,12 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
     vm.user = user;
     vm.user.totalDollarProfit = 0;
     user.trades.forEach((trade, index) => getLivePrice(trade, index));
+    user.trades_by_epic.forEach((trade, index) => getLivePrice(trade, index));
   });
 
   vm.tradeStock = (trade) => {
     document.getElementById("container").style.height="200px";
-    vm.trade = trade;
+    vm.trade = trade
     getLivePrice(trade);
     vm.getData();
     vm.trade.trade_type = "sell";
@@ -34,7 +35,7 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
     .then(function successCallback(response) {
       trade.currentPrice     = parseFloat(response.data[0].l_cur);
       if(vm.trade) vm.trade.currentPrice = parseFloat(response.data[0].l_cur);
-      trade.currentValue     = trade.currentPrice * trade.number_of_shares;
+      trade.currentValue     = parseFloat(trade.currentPrice * trade.number_of_shares).toFixed(2);
       trade.dollarProfit     = Math.floor((trade.currentValue - trade.book_value) * 100)/100;
       trade.percentageProfit = Number((trade.currentValue/trade.book_value)-1).toFixed(2);
       // update user's trade with augmented trade object
@@ -62,9 +63,9 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
 
 
   /*
-   * Sorting Quandl data for use in Highcharts
-   * - Create chart at the end
-   */
+  * Sorting Quandl data for use in Highcharts
+  * - Create chart at the end
+  */
   function sortChartData() {
     vm.trade.dateInformation  = [];
     vm.trade.priceInformation = [];
@@ -82,9 +83,40 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
         renderTo: 'container',
         type: 'line',
         height: 200,
+        zoomType: 'x'
       },
       title: {
         text: "",
+      },
+      subtitle: {
+        text: document.ontouchstart === undefined ?
+        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1
+            },
+            stops: [
+              [0, Highcharts.getOptions().colors[0]],
+              [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            radius: 2
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
       },
       xAxis: {
         type: 'datetime',
@@ -92,7 +124,7 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
           text: 'Date'
         },
         dateTimeLabelFormats: {
-           day: '%d %b %Y'
+          day: '%d %b %Y'
         }
       },
       yAxis: {
@@ -100,32 +132,37 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
           text: 'Price (USD)'
         }
       },
+      legend: {
+        enabled: false
+      },
       series: [{
+        type: 'area',
         name: vm.trade.epic,
-        showInLegend: false,
-        data: vm.trade.priceInformation
+        data: vm.trade.priceInformation,
+        tooltip: {
+          valueDecimals: 2
+        }
       }]
     });
   }
 
   vm.submitSellTrade = () => {
     Trade
-      .save({ trade: vm.trade })
-      .$promise
-      .then(data => {
-        $("#myModal").modal("hide");
-        User
-        .get($stateParams).$promise
-        .then(user => {
-          vm.user = user;
-          vm.user.totalDollarProfit = 0;
-          user.trades.forEach((trade, index) => getLivePrice(trade, index));
-        });
-
-        // Want to reload page to see new trades. or 'push' data to end of table?
-      })
-      .catch(response => {
-        console.log(response);
+    .save({ trade: vm.trade })
+    .$promise
+    .then(data => {
+      $("#myModal").modal("hide");
+      User
+      .get($stateParams).$promise
+      .then(user => {
+        vm.user = user;
+        vm.user.totalDollarProfit = 0;
+        user.trades.forEach((trade, index) => getLivePrice(trade, index));
       });
+      // Want to reload page to see new trades. or 'push' data to end of table?
+    })
+    .catch(response => {
+      console.log(response);
+    });
   };
 }

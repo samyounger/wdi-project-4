@@ -4,6 +4,33 @@
 <table>
   <tbody>
     <tr>
+      <td>Exchange</td>
+      <td>EPIC</td>
+      <td>Shares</td>
+      <td>Book Value</td>
+      <td>Current Value</td>
+      <td>$ Profit/Loss</td>
+      <td>% Profit/Loss</td>
+      <td>Action</td>
+    </tr>
+    <tr ng-repeat="trade in show.user.trades_by_epic track by $index">
+      <td>{{ trade.exchange }}</td>
+      <td>{{ trade.epic }}</td>
+      <td>{{ trade.number_of_shares }}</td>
+      <td>{{ trade.book_value }}</td>
+      <td>{{ trade.currentValue }}</td>
+      <td>{{ trade.dollarProfit }}</td>
+      <td>{{ trade.percentageProfit }}</td>
+      <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)">
+        Sell
+      </button></td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
       <td>Buy/Sell</td>
       <td>Exchange</td>
       <td>EPIC</td>
@@ -28,9 +55,6 @@
       <td>{{ trade.dollarProfit }}</td>
       <td>{{ trade.percentageProfit }}</td>
       <td>{{ trade.comments }}</td>
-      <td><button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal" ng-click="show.tradeStock(trade)" ng-if="trade.trade_type!='sell'">
-        Sell
-      </button></td>
     </tr>
   </tbody>
   <tfoot>
@@ -75,12 +99,7 @@
 
           <div class="form-group">
             <label for="number_of_shares">Shares no.</label>
-            <input type="text" id="number_of_shares" ng-model="show.trade.number_of_shares" readonly="" class="form-control">
-          </div>
-
-          <div class="form-group">
-            <label for="value">Book cost</label>
-            <input type="text" id="book_value" ng-model="show.trade.book_value" readonly="" class="form-control">
+            <input type="text" id="number_of_shares" ng-model="show.trade.number_of_shares" class="form-control">
           </div>
 
           <div class="form-group">
@@ -90,7 +109,7 @@
 
           <div class="form-group">
             <label for="sale_value">Sale Value</label>
-            <input type="text" id="price" ng-model="show.trade.sale_value" readonly="" class="form-control">
+            <input type="text" id="price" ng-model="show.trade.sale_value" ng-bind="show.trade.sale_value = show.trade.number_of_shares * show.trade.currentPrice" readonly="" class="form-control">
           </div>
 
           <div class="form-group">

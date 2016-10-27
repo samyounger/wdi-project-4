@@ -1,6 +1,8 @@
 <h2>Companies Index Page</h2>
 <div class="companyContainer">
-  <h3>{{  }}</h3>
-  <p></p>
-  <p></p>
+  <!-- Comments container -->
+    <h2>Comments</h2>
+    <ul ng-repeat="trade in index.company.trades">
+      <li>{{  trade.epic }}: {{ trade.trade_type }} | {{ trade.comments }}</li>
+    </ul>
 </div>
