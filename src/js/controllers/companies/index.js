@@ -10,7 +10,6 @@ function companiesIndexCtrl(CurrentUserService, User, $stateParams, $http, API, 
   .get({id: CurrentUserService.getUser().id})
   .$promise
   .then(user => {
-    console.log(user);
     vm.user = user;
     vm.user.totalDollarProfit = 0;
     vm.user.totalPortfolioValue = 0;
@@ -25,7 +24,6 @@ function companiesIndexCtrl(CurrentUserService, User, $stateParams, $http, API, 
   };
 
   function getLivePrice(trade, index){
-    console.log("yup");
     $http({
       method: 'POST',
       url: `${API}/getdetails`,
@@ -34,7 +32,6 @@ function companiesIndexCtrl(CurrentUserService, User, $stateParams, $http, API, 
       },
     })
     .then(function successCallback(response) {
-      console.log(response);
       trade.currentPrice     = parseFloat(response.data[0].l_cur);
       if(vm.trade) vm.trade.currentPrice = parseFloat(response.data[0].l_cur);
       trade.currentValue     = trade.currentPrice * trade.number_of_shares;

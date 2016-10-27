@@ -20,6 +20,6 @@ function mainCtrl($rootScope, CurrentUserService, $state) {
 
   $rootScope.$on("loggedOut", () => {
     vm.user = null;
-    $state.go("companiesNew");
+    $state.go("login");
   });
 }

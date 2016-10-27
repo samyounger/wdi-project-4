@@ -27,23 +27,23 @@
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-              <li ng-show="main.user">
+              <li ng-if="main.user">
                 <a ui-sref="companiesNew">Search companies</a>
               </li>
-              <li ng-show="main.user">
+              <li ng-if="main.user">
                 <a ui-sref="companiesIndex">Trades</a>
               </li>
-              <li ng-show="main.user">
+              <li ng-if="main.user">
                 <a ui-sref="usersShow({id: main.user.id})">Portfolio</a>
               </li>
-              <li ng-hide="main.user">
+              <li ng-if="!main.user">
                 <a ui-sref="register">Register</a>
               </li>
-              <li ng-hide="main.user">
+              <li ng-if="!main.user">
                 <a ui-sref="login">Login</a>
               </li>
-              <li ng-show="main.user">
-                <a ng-click="main.logout()">Logout</a>
+              <li ng-if="main.user">
+                <a ng-click="main.logout()" href="#">Logout</a>
               </li>
             </ul>
           </div>
