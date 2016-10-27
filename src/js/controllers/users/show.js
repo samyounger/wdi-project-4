@@ -35,8 +35,8 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
       trade.currentPrice     = parseFloat(response.data[0].l_cur);
       if(vm.trade) vm.trade.currentPrice = parseFloat(response.data[0].l_cur);
       trade.currentValue     = trade.currentPrice * trade.number_of_shares;
-      trade.dollarProfit     = trade.currentValue - trade.book_value;
-      trade.percentageProfit = (trade.currentValue/trade.book_value)-1;
+      trade.dollarProfit     = Math.floor((trade.currentValue - trade.book_value) * 100)/100;
+      trade.percentageProfit = Number((trade.currentValue/trade.book_value)-1).toFixed(2);
       // update user's trade with augmented trade object
       vm.user.trades[index] = trade;
       // Increment profit

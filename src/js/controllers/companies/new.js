@@ -41,8 +41,8 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   };
 
   /*
-   * Get historic price data from Quandl
-   */
+  * Get historic price data from Quandl
+  */
   vm.getData = function(){
     event.preventDefault();
     return $http({
@@ -52,21 +52,24 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       vm.company.dataset = response.data.dataset;
       sortChartData();
       getLivePrice();
+
+      vm.getTradeComments();
     }, function errorCallback(response) {
       vm.error = response;
     });
   };
 
   /*
-   * Sorting Quandl data for use in Highcharts
-   * - Create chart at the end
-   */
+  * Sorting Quandl data for use in Highcharts
+  * - Create chart at the end
+  */
   function sortChartData() {
     vm.company.dateInformation  = [];
     vm.company.priceInformation = [];
 
     for (var i = vm.company.dataset.data.length-1; i >= 0; i--) {
-      vm.company.dateInformation.push(vm.company.dataset.data[i][0]);
+      let date = Date.parse(vm.company.dataset.data[i][0]+" UTC");
+      vm.company.dateInformation.push(date);
       vm.company.priceInformation.push(vm.company.dataset.data[i][11]);
     }
     return prepareChart();
@@ -77,9 +80,40 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
       chart: {
         renderTo: 'container',
         type: 'line',
+        zoomType: 'x'
       },
       title: {
         text: vm.company.label,
+      },
+      subtitle: {
+        text: document.ontouchstart === undefined ?
+        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1
+            },
+            stops: [
+              [0, Highcharts.getOptions().colors[0]],
+              [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+            ]
+          },
+          marker: {
+            radius: 2
+          },
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 1
+            }
+          },
+          threshold: null
+        }
       },
       xAxis: {
         type: 'datetime',
@@ -87,7 +121,7 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
           text: 'Date'
         },
         dateTimeLabelFormats: {
-           day: '%d %b %Y'
+          day: '%d %b %Y'
         }
       },
       yAxis: {
@@ -95,10 +129,17 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
           text: 'Price (USD)'
         }
       },
+      legend: {
+        enabled: false
+      },
       series: [{
+        type: 'area',
         name: vm.company.label,
-        showInLegend: false,
-        data: vm.company.priceInformation
+        // showInLegend: false,
+        data: vm.company.priceInformation,
+        tooltip: {
+          valueDecimals: 2
+        }
       }]
     });
   }
@@ -123,16 +164,15 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
   };
 
   vm.submitBuyTrade = () => {
-    console.log(vm.trade)
     Trade
-      .save({ trade: vm.trade }).$promise
-      .then(data => {
-        $("#myModal").modal("hide");
-        $state.go("usersShow", { id: CurrentUserService.getUser().id });
-      })
-      .catch(response => {
-        console.log(response);
-      });
+    .save({ trade: vm.trade }).$promise
+    .then(data => {
+      $("#myModal").modal("hide");
+      $state.go("usersShow", { id: CurrentUserService.getUser().id });
+    })
+    .catch(response => {
+      console.log(response);
+    });
   };
 
   vm.tradeStock = (trade) => {
@@ -141,4 +181,15 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
     vm.getData();
     vm.trade.trade_type = "buy";
   };
+
+  vm.getTradeComments = () => {
+    $http({
+      method: 'GET',
+      url: `${API}/trades`,
+    }).then(function successCallback(response) {
+      vm.company.trades = response.data;
+      console.log(response.data)
+    }, function errorCallback(response) {
+      vm.error = response;
+    });  };
 }

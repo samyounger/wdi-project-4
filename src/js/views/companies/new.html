@@ -4,14 +4,14 @@
 <form name="getCompany" method="post" autocomplete="off" ng-submit="new.getData()">
   <div class="form-group">
     <input
-      type="text"
-      name="stockName"
-      placeholder="Enter stock name here"
-      ng-model="asyncSelected"
-      uib-typeahead="company.label for company in new.getCompany($viewValue)" typeahead-loading="loadingLocations"
-      typeahead-on-select="new.selectCompany($item, $model, $label)"
-      autofocus=""
-      class="form-control">
+    type="text"
+    name="stockName"
+    placeholder="Enter stock name here"
+    ng-model="asyncSelected"
+    uib-typeahead="company.label for company in new.getCompany($viewValue)" typeahead-loading="loadingLocations"
+    typeahead-on-select="new.selectCompany($item, $model, $label)"
+    autofocus=""
+    class="form-control">
   </div>
 
   <input type="submit" class="btn btn-primary pull-right" value="Submit">
@@ -89,3 +89,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Comments container -->
+<div class="commentsContainer">
+  <h2>Comments</h2>
+  <ul ng-repeat="trade in new.company.trades">
+    <li>{{ trade.trade_type }} | {{ trade.comments }}</li>
+  </ul>
+</div>
