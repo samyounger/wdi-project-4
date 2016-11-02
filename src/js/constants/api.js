@@ -1,3 +1,3 @@
 angular
   .module("bodhinomad")
-  .constant("API", "https://bodhinomad-api.herokuapp.com");
+  .constant("API", "https://bodhinomad-api.herokuapp.com/api");
