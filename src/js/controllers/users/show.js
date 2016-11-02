@@ -10,9 +10,9 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
   .get($stateParams).$promise
   .then(user => {
     vm.user = user;
-    vm.user.totalDollarProfit = 0;
+    // vm.user.totalDollarProfit = 0;
     vm.user.totalPortfolioValue = 0;
-    user.trades.forEach((trade, index) => getLivePrice(trade, index));
+    // user.trades.forEach((trade, index) => getLivePrice(trade, index));
     user.trades_by_epic.forEach((trade, index) => getLivePrice(trade, index));
   });
 
@@ -42,7 +42,7 @@ function usersShowCtrl(User, $stateParams, $http, API, $state, CurrentUserServic
       // update user's trade with augmented trade object
       vm.user.trades[index] = trade;
       // Increment profit
-      vm.user.totalDollarProfit += trade.dollarProfit;
+      // vm.user.totalDollarProfit += trade.dollarProfit;
       vm.user.totalPortfolioValue += trade.currentValue;
     }, function errorCallback(response) {
       vm.error = response;
