@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "istanbul cover node_modules/.bin/_mocha"
+    "test": "istanbul cover node_modules/.bin/_mocha",
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "author": "Sam Younger",
   "license": "ISC",
@@ -37,6 +38,11 @@
     "supertest": "^2.0.0"
   },
   "dependencies": {
-    "express": "^4.14.0"
+    "bower": "^1.7.9",
+    "express": "^4.14.0",
+    "forever": "^0.15.3"
+  },
+  "engines": {
+    "node": "6.1.0"
   }
 }
