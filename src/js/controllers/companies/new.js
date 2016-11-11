@@ -2,38 +2,35 @@ angular
 .module("bodhinomad")
 .controller("companiesNewCtrl", companiesNewCtrl);
 
-companiesNewCtrl.$inject = ["Trade", "$http", "$resource", "CurrentUserService", "API", "$state"];
-function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $state) {
+companiesNewCtrl.$inject = ["Trade", "$http", "$resource", "CurrentUserService", "API", "$state", "$scope", "$timeout"];
+function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $state, $scope, $timeout) {
   const vm = this;
 
   vm.trade = {
     trade_type: "buy"
   };
 
+  let debounce = null;
+
   vm.getCompany = function(val){
-    return $http({
-      method: 'POST',
-      url: `${API}/company`,
-      data: { input: val },
-      transformResponse: function (data, headersGetter, status) {
-        // Catch the error if there is a parsing the JSON
-        if (data) {
-          try {
-            data = JSON.parse(data);
-          } catch(e){
-            data = null;
-          }
-        }
-        return data;
-      }
-    }).then(function(response){
-      return response.data.map(function(item){
-        return {
-          label: `${item.Name} (${item.Symbol})`,
-          result: item
-        };
-      });
-    });
+    $timeout.cancel(debounce);
+      return debounce = $timeout(function() {
+        return $http({
+          method: 'POST',
+          url: `${API}/company`,
+          data: {
+            input: val,
+            id: CurrentUserService.getUser().id
+          },
+        }).then(function(response){
+          return response.data.map(function(item){
+            return {
+              label: `${item.Name} (${item.Symbol})`,
+              result: item
+            };
+          });
+        });
+      }, 300);
   };
 
   vm.selectCompany = function($item, $model, $label){
@@ -86,8 +83,8 @@ function companiesNewCtrl(Trade, $http, $resource, CurrentUserService, API, $sta
     for (var i = vm.company.dataset.data.length-1; i >= 0; i--) {
       let date = vm.company.dataset.data[i][0];
       let year = date.slice(0,4),
-          month = date.slice(5, 7),
-          day = date.slice(8, 10);
+      month = date.slice(5, 7),
+      day = date.slice(8, 10);
 
       date = `${day}/${month}/${year}`;
 

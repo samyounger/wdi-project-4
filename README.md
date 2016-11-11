@@ -119,3 +119,7 @@ Of the three GA week-long projects, this is the most unfinished one which is ver
 I am extremely proud that I managed to get as far as I did with this project with c. 4 days worth of coding. In addition figuring out how to get a free live market price was a triumph for me. 
 Clearly working with FinTech presents a lot of challenges not normally faced with previous development I have done, namely ensuring the data retrieved is accurate. For example I realised after two days of getting 'live market prices' for stocks, that for some stocks it was returning a market price different from that on the Google Finance website. I realised this is because my API was retrieving the London listing, rather than the NYSE because I had not specified the exchange - 'Doh'. I therefore had to go back and edit the code to use the exchange as well as the EPIC, thereby slowing down development.
 I will need to spend some time figuring out what is up with the search bar failing when typing too fast. I don't know if this is the external API failing with too many requests at once, or something wrong at my end. Perhaps a time delay on each request?
+
+
+Console.log error when typing too fast
+`Request blockedExceeded requests/sec limit.`
