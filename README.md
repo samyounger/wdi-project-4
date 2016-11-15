@@ -120,6 +120,12 @@ I am extremely proud that I managed to get as far as I did with this project wit
 Clearly working with FinTech presents a lot of challenges not normally faced with previous development I have done, namely ensuring the data retrieved is accurate. For example I realised after two days of getting 'live market prices' for stocks, that for some stocks it was returning a market price different from that on the Google Finance website. I realised this is because my API was retrieving the London listing, rather than the NYSE because I had not specified the exchange - 'Doh'. I therefore had to go back and edit the code to use the exchange as well as the EPIC, thereby slowing down development.
 I will need to spend some time figuring out what is up with the search bar failing when typing too fast. I don't know if this is the external API failing with too many requests at once, or something wrong at my end. Perhaps a time delay on each request?
 
+##Additional Points
+I have fixed the issue with the searchbar failing to load when typing too fast. The MarkitDev API was returning the following error:
+`Request blockedExceeded requests/sec limit`
+A workaround was to use the `Timeout` Angular module. This works like a promise, and only runs the next request once the previous one has completed, with a 300ms delay between each one.
 
-Console.log error when typing too fast
-`Request blockedExceeded requests/sec limit.`
+I discovered this site doesn't work on Internet Explorer. It comes up with two errors:
+	`XMLHttpRequest for http://..... required Cross Origin Resource Sharing (CORS)`
+	`XMLHttpRequest for http://..... required CORS preflight`
+I looked this up and it seems I need to write a p3p program, which returns a header that IE reads which essentially states that you will not collect user data. It looks like paid software is required to generate this file, and so I've decided for now not to develop this due to the cost. Perhaps I should put something in the homepage that said "DO NOT USE IE EVER".
