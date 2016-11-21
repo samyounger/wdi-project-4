@@ -23,6 +23,7 @@
     "highcharts": "^5.0.0",
     "bootstrap": "^3.3.7",
     "angular-bootstrap": "^2.2.0",
-    "compass-sass-mixins": "*"
+    "compass-sass-mixins": "*",
+    "angular-moment": "^1.0.0"
   }
 }
